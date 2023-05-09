@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+        <link rel="stylesheet" th:href="@{/css/EmployeeWorking.css}" />
+    </head>
+    <body>
+        <div th:replace="HeaderForCustomer :: header"></div>
+        <div class="container">
+            <div>
+                <h2>Công Việc Hôm Nay</h2>
+                <div class="content">
+                    <div class="list">
+                        <h2>Công Việc Được Giao</h2>
+                        <div class="card" id="card">
+                            <!-- Jobs will be dynamically populated here -->
+                        </div>
+                    </div>
+
+                    <div class="list">
+                        <h2>Công Việc Đang Thực Hiện</h2>
+                        <div class="card-1" id="card-2">
+                            <!-- Jobs will be dynamically populated here -->
+                        </div>
+                    </div>
+
+                    <div class="list">
+                        <h2>Công Việc Đã Hoàn Thành</h2>
+                        <div class="card-2" id="card-3">
+                            <!-- Jobs will be dynamically populated here -->
+                        </div>
+                    </div>
+
+                    <script th:inline="javascript">
+                        const data = {
+                            status: 1,
+                        };
+
+                        const data2 = {
+                            status: 2,
+                        };
+
+                        const data3 = {
+                            status: 3,
+                        };
+
+                        const params = new URLSearchParams(data);
+                        const url = `http://localhost:9000/list-job-by-status?${params.toString()}`;
+                        var token = /*[[${session.accesstoken}]]*/ "";
+
+                        fetch(url, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: token,
+                            },
+                        })
+                            .then((response) => response.json())
+                            .then((jobs) => {
+                                console.log(jobs);
+
+                                const listContainer = document.querySelector("#card");
+                                listContainer.innerHTML = "";
+
+                                jobs.forEach((job) => {
+                                    const listItem = document.createElement("div");
+                                    listItem.classList.add("list-item");
+
+                                    const jobName = document.createElement("h2");
+                                    jobName.innerText = `Công Việc: ${job.jobName}`;
+
+                                    const description = document.createElement("p");
+                                    description.innerText = `Mô tả: ${job.description}`;
+
+                                    const employee = document.createElement("p");
+                                    employee.innerText = `Người thực hiện: ${job.employeeName}`;
+
+                                    const status = document.createElement("p");
+                                    status.innerText = job.status == 1 ? "Trạng Thái: Chưa Thực Hiện" : "Trạng Thái: Đang Thực Hiện";
+
+                                    const params = new URLSearchParams(data2);
+                                    const button = document.createElement("button");
+                                    button.textContent = "Thực Hiện";
+                                    button.style.marginLeft = "10px";
+                                    button.addEventListener("click", () => {
+                                        fetch(`http://localhost:9000/change-status/${job.id}?${params.toString()}`, {
+                                            method: "POST",
+                                            headers: {
+                                                Authorization: token,
+                                            },
+                                        })
+                                            .then((response) => {
+                                                if (response.ok) {
+                                                    // Thay đổi trạng thái thành công, cập nhật lại giao diện
+                                                    if (job.status == 1) {
+                                                        button.textContent = "Thực Hiện";
+                                                    }
+                                                    location.reload();
+                                                } else {
+                                                    // Thay đổi trạng thái không thành công, hiển thị thông báo lỗi
+                                                    alert("Lỗi: " + response.statusText);
+                                                    location.reload();
+                                                }
+                                            })
+                                            .catch((error) => console.error(error));
+                                    });
+
+                                    listItem.appendChild(jobName);
+                                    listItem.appendChild(description);
+                                    listItem.appendChild(employee);
+                                    listItem.appendChild(status);
+                                    listItem.appendChild(button);
+                                    listContainer.appendChild(listItem);
+                                });
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            });
+
+                        const params1 = new URLSearchParams(data2);
+                        const url1 = `http://localhost:9000/list-job-by-status?${params1.toString()}`;
+                        var token = /*[[${session.accesstoken}]]*/ "";
+
+                        fetch(url1, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: token,
+                            },
+                        })
+                            .then((response) => response.json())
+                            .then((jobs) => {
+                                console.log(jobs);
+
+                                const listContainer = document.querySelector("#card-2");
+                                listContainer.innerHTML = "";
+
+                                jobs.forEach((job) => {
+                                    const listItem = document.createElement("div");
+                                    listItem.classList.add("list-item");
+
+                                    const jobName = document.createElement("h2");
+                                    jobName.innerText = `Công Việc: ${job.jobName}`;
+
+                                    const description = document.createElement("p");
+                                    description.innerText = `Mô tả: ${job.description}`;
+
+                                    const employee = document.createElement("p");
+                                    employee.innerText = `Người thực hiện: ${job.employeeName}`;
+
+                                    const status = document.createElement("p");
+                                    status.innerText = job.status == 1 ? "Trạng Thái: Chưa Thực Hiện" : "Trạng Thái: Đang Thực Hiện";
+
+                                    const params = new URLSearchParams(data3);
+                                    const button = document.createElement("button");
+                                    button.textContent = "Hoàn Thành";
+                                    button.style.marginLeft = "10px";
+                                    button.addEventListener("click", () => {
+                                        fetch(`http://localhost:9000/change-status/${job.id}?${params.toString()}`, {
+                                            method: "POST",
+                                            headers: {
+                                                Authorization: token,
+                                            },
+                                        })
+                                            .then((response) => {
+                                                if (response.ok) {
+                                                    // Thay đổi trạng thái thành công, cập nhật lại giao diện
+                                                    if (job.status == 1) {
+                                                        button.textContent = "Hoàn Thành";
+                                                    }
+                                                    location.reload();
+                                                } else {
+                                                    // Thay đổi trạng thái không thành công, hiển thị thông báo lỗi
+                                                    alert("Lỗi: " + response.statusText);
+                                                    location.reload();
+                                                }
+                                            })
+                                            .catch((error) => console.error(error));
+                                    });
+
+                                    listItem.appendChild(jobName);
+                                    listItem.appendChild(description);
+                                    listItem.appendChild(employee);
+                                    listItem.appendChild(status);
+                                    listItem.appendChild(button);
+                                    listContainer.appendChild(listItem);
+                                });
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            });
+
+                        const params2 = new URLSearchParams(data3);
+                        const url2 = `http://localhost:9000/list-job-by-status?${params2.toString()}`;
+                        var token = /*[[${session.accesstoken}]]*/ "";
+
+                        fetch(url2, {
+                            method: "GET",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: token,
+                            },
+                        })
+                            .then((response) => response.json())
+                            .then((jobs) => {
+                                console.log(jobs);
+
+                                const listContainer = document.querySelector("#card-3");
+                                listContainer.innerHTML = "";
+
+                                jobs.forEach((job) => {
+                                    const listItem = document.createElement("div");
+                                    listItem.classList.add("list-item");
+
+                                    const jobName = document.createElement("h2");
+                                    jobName.innerText = `Công Việc: ${job.jobName}`;
+
+                                    const description = document.createElement("p");
+                                    description.innerText = `Mô tả: ${job.description}`;
+
+                                    const employee = document.createElement("p");
+                                    employee.innerText = `Người thực hiện: ${job.employeeName}`;
+
+                                    const status = document.createElement("p");
+                                    status.innerText = "Đã Hoàn Thành";
+
+                                    listItem.appendChild(jobName);
+                                    listItem.appendChild(description);
+                                    listItem.appendChild(employee);
+                                    listItem.appendChild(status);
+                                    listContainer.appendChild(listItem);
+                                });
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            });
+                    </script>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

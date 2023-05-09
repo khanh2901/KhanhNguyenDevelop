@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<link rel="stylesheet" th:href="@{/css/styte.css}">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+</head>
+<style>
+</style>
+
+<body>
+
+	<header class="header">
+		<ul id="nav">
+			<a id="image"> <img width="130px" alt="" src="/img/LogoK.png" />
+			</a>
+			<li class="abc"><a th:href="@{http://localhost:9000/}">Tổng
+					Quan</a></li>
+			<li class="abc"><a th:href="@{/user-list}"> Quản Lý Nhân
+					Viên</a>
+				<ul class="subnav">
+					<li class="subabc"><a th:href="@{/user/create}">Tạo Tài
+							Khoản Nhân Viên </a></li>
+					<li class="subabc"><a th:href="@{/user-list}">Danh Sách
+							Nhân Viên </a></li>
+				</ul></li>
+			<li class="abc"><a th:href="@{/assinn-job}">Quản Lý Công
+					Việc</a></li>
+			<li class="abc"><a th:href="@{/customer-list}">Quản Lý Khách
+					Hàng </a>
+				<ul class="subnav">
+					<li class="subabc"><a th:href="@{/create}">Tạo Tài Khoản
+							Khách Hàng</a></li>
+					<li class="subabc"><a th:href="@{/customer-list}">Danh
+							Sách Khách Hàng </a></li>
+				</ul></li>
+			</li>
+			<li class="abc"><a th:href="@{/warehouse-session}">Quản Lý
+					Kho </a>
+				<ul class="subnav">
+					<li class="subabc"><a th:href="@{/warehouse-session}">
+							Nguyên Liệu Nhà Hàng</a></li>
+					<li class="subabc"><a th:href="@{/material-import}"> Nhập
+							Kho</a></li>
+					<li class="subabc"><a
+						th:href="@{/materials/total-quantity/to-map-view}"> Nguyên
+							Liệu Trong Kho</a></li>
+					<li class="subabc"><a
+						th:href="@{/warehouse-session/list/to-map-view}">Quản Lý Phiếu
+							Kho</a></li>
+
+				</ul></li>
+			<li class="abc"><a th:href="@{/food/list/map-to-view}"> Quản
+					Lý Món Ăn</a>
+				<ul class="subnav">
+					<li class="foodmanager"><a th:href="@{/food/list/map-to-view}">Danh
+							Sách Món Ăn</a></li>
+					<li class="foodmanager"><a
+						th:href="@{/food/list/pause/map-to-view}">Danh Sách Món Ăn Tạm
+							Ngưng</a></li>
+				</ul></li>
+			<li class="abc"><a th:href="@{/order}"> Quản Lý Đơn Hàng</a>
+				<ul class="subnav">
+					<li class="subabc"><a th:href="@{/order}"> Đơn Hàng Đang
+							Giao</a></li>
+				</ul></li>
+			<li class="abc"><a th:href="@{/booking-manager}">Quản Lý Đặt
+					Bàn </a></li>
+
+			<li class="abc"><a href="">Báo Cáo Doanh Thu </a>
+				<ul class="subnav">
+
+					<li class="subabc"><a th:href="@{/material-report-view}">Báo
+							Cáo Chi Phí Nguyên Liệu</a></li>
+
+				</ul>
+
+			</li>
+			<li class="abc"><a th:href="@{/units/create}"> Xây Dựng Dữ
+					Liệu</a>
+				<ul class="subnav">
+					<li class="foodmanager"><a th:href="@{/units/create}">Tạo
+							Đơn Vị </a></li>
+					<li class="foodmanager"><a th:href="@{/materials/create}">Tạo
+							Nguyên Liệu</a></li>
+					<li class="foodmanager"><a th:href="@{/categories/create}">Tạo
+							Danh Mục</a></li>
+					<li class="foodmanager"><a th:href="@{/food}">Tạo Món Ăn</a></li>
+				</ul></li>
+			<div>
+				<a th:href="@{/profile}"><i class="fas fa-user"></i> Trang Cá
+					Nhân</a>
+			</div>
+
+		</ul>
+
+	</header>
+
+	<script type="text/javascript" th:src="@{js/CheckRole.js}">
+		
+	</script>
+</body>
+
+</html>

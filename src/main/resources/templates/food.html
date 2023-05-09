@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+        <link rel="stylesheet" th:href="@{/css/importMaterial.css}" />
+    </head>
+    <body>
+        <div th:replace="header :: header"></div>
+        <br />
+        <br />
+        <br />
+
+        <div id="container">
+            <br />
+            <h2>Tạo Món Ăn</h2>
+            <form id="materialForm" th:object="${material}" th:action="@{/material-import}" method="post">
+                <label for="image">Chọn Ảnh Cho Món Ăn</label> <br />
+                <input type="file" id="avatar" name="avatar" accept="image/*" onchange="loadImage(event)" /> <br />
+                <img id="preview" width="100px" height="100px" src="#" alt="Ảnh Món Ăn" style="display: none;" /> <label for="foodName">Tên Món Ăn</label> <input type="text" id="food-name" name="foodName" />
+                <label for="vat">Thuế(VAT)</label> <input type="number" id="vat" name="vat" /> <label for="discountPercent">Giảm Giá Theo Phần Trăm(%):</label> <input type="number" id="discountPercent" name="discountPercent" />
+                <label for="discountAmount">Giảm Giá Theo Tiền Mặt("VND"):</label> <input type="number" id="discountAmount" name="discountAmount" /> <label for="categoryType">Loại Món Ăn</label>
+                <select id="categoryType" name="categoryType" required>
+                    <option value="" selected disabled hidden></option>
+                </select>
+                <label for="materials">Nguyên Liệu Món Ăn</label>
+                <div id="materialsList">
+                    <div class="materialItem">
+                        <select id="material-id" name="materials[]" required class="material-select"></select>
+                        <input type="text" name="quantity[]" placeholder="Quantity" class="quantity-input" />
+                    </div>
+                </div>
+                <button id="addMaterial">Thêm Nguyên Liệu</button>
+
+                <br />
+                <br />
+                <button type="submit">Thêm Mới</button>
+            </form>
+        </div>
+
+        <script th:inline="javascript">
+            var token = /*[[${session.accesstoken}]]*/ "";
+            var materialSelect = document.getElementById("material-id");
+
+            fetch("http://localhost:9000/material/list/to-warehouse", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+            })
+                .then((response) => response.json())
+                .then((materials) => {
+                    materials.forEach((material) => {
+                        var option = document.createElement("option");
+                        option.value = material.id;
+                        option.text = material.name;
+                        materialSelect.add(option);
+                    });
+                })
+                .catch((error) => console.log(error));
+
+            var categoryTypeSelect = document.getElementById("categoryType");
+
+            var dataOption = [
+                { id: 1, name: "Đồ Ăn" },
+                { id: 2, name: "Nước Uống" },
+                { id: 3, name: "Hải Sản" },
+                { id: 4, name: "Bia Rượu" },
+            ];
+
+            dataOption.forEach((data) => {
+                var option = document.createElement("option");
+                option.value = data.id;
+                option.text = data.name;
+                categoryTypeSelect.add(option);
+            });
+
+            document.getElementById("materialForm").addEventListener("submit", function (event) {
+                event.preventDefault();
+
+                const formData = new FormData(event.target);
+
+                const foodName = formData.get("foodName");
+
+                const vat = formData.get("vat");
+
+                const discountPercent = formData.get("discountPercent");
+
+                const discountAmount = formData.get("discountAmount");
+
+                const categoryType = formData.get("categoryType");
+
+                const materialSelects = document.querySelectorAll(".material-select");
+
+                const file = formData.get("avatar");
+                const fileName = file.name;
+
+                const materials = [];
+
+                materialSelects.forEach(function (select) {
+                    const materialId = parseInt(select.value);
+                    const quantityInput = select.parentElement.querySelector(".quantity-input");
+                    const quantity = parseInt(quantityInput.value.trim());
+                    const material = { material_id: materialId, quantity: quantity };
+                    materials.push(material);
+                });
+
+                const materialsBody = JSON.stringify(materials);
+
+                var params = new URLSearchParams();
+
+                params.append("vat", vat);
+                params.append("discountPercent", discountPercent);
+                params.append("discountAmount", discountAmount);
+                params.append("categoryType", categoryType);
+                params.append("materials", materialsBody);
+                params.append("foodName", foodName);
+                params.append("avatar", fileName);
+
+                fetch("http://localhost:9000/create/food?" + params.toString(), {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: token,
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        console.log(data);
+                        if (data.err) {
+                            alert("Chỉ được sử dụng một trong hai hình thức giảm giá!");
+                        } else {
+                            alert("Đã tạo thành công món ăn");
+                            location.reload();
+                        }
+                    })
+
+                    .catch((error) => console.error(error));
+            });
+
+            // Lấy thẻ button "Add Material"
+            const addMaterialButton = document.getElementById("addMaterial");
+
+            // Lấy thẻ chứa danh sách nguyên liệu
+            const materialsList = document.getElementById("materialsList");
+
+            addMaterialButton.addEventListener("click", function () {
+                // Tạo thẻ div mới để chứa select và input
+                const newMaterialItem = document.createElement("div");
+                newMaterialItem.className = "materialItem";
+
+                // Tạo select mới
+                const newMaterialSelect = document.createElement("select");
+                newMaterialSelect.name = "material_id[]";
+                newMaterialSelect.className = "material-select";
+
+                // Gọi API để lấy danh sách nguyên liệu
+                fetch("http://localhost:9000/material/list/to-warehouse", {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: token,
+                    },
+                })
+                    .then((response) => response.json())
+                    .then((materials) => {
+                        // Tạo các option mới từ danh sách nguyên liệu và thêm chúng vào select mới
+                        materials.forEach((material) => {
+                            const option = document.createElement("option");
+                            option.value = material.id;
+                            option.textContent = material.name;
+                            newMaterialSelect.appendChild(option);
+                        });
+                    })
+                    .catch((error) => console.log(error));
+
+                // Tạo input mới
+                const newQuantityInput = document.createElement("input");
+                newQuantityInput.type = "text";
+                newQuantityInput.name = "quantity[]";
+                newQuantityInput.placeholder = "Quantity";
+                newQuantityInput.className = "quantity-input";
+                newQuantityInput.required = true;
+
+                // Thêm select và input vào thẻ div mới
+                newMaterialItem.appendChild(newMaterialSelect);
+                newMaterialItem.appendChild(newQuantityInput);
+
+                // Thêm thẻ div mới vào danh sách nguyên liệu
+                materialsList.appendChild(newMaterialItem);
+            });
+
+            function loadImage(event) {
+                var input = event.target;
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        var preview = document.getElementById("preview");
+                        preview.src = e.target.result;
+                        preview.style.display = "block";
+                    };
+
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
+        </script>
+    </body>
+</html>

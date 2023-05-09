@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+        <link rel="stylesheet" th:href="@{/css/wareHouse.css}" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+    </head>
+
+    <body>
+        <div th:replace="HeaderForCustomer :: header"></div>
+
+        <div class="container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Stt</th>
+                        <th>Mã Đơn Hàng</th>
+                        <th>Tổng Tiền</th>
+                        <th>Trạng Thái</th>
+                        <th>Ngày Tạo</th>
+                        <th>Xem Chi Tiết</th>
+                    </tr>
+                </thead>
+                <tbody id="ingredients-list"></tbody>
+            </table>
+        </div>
+
+        <script th:inline="javascript">
+            const orderList = document.getElementById("ingredients-list");
+
+            const url = `http://localhost:9000/order-list`;
+            fetch(url) // Send a GET request to the API endpoint with the dateorder query parameter
+                .then((response) => response.json())
+                .then((orders) => {
+                    var index = 0;
+                    orders.forEach((order) => {
+                        function getDetails() {
+                            const url = `http://localhost:9000/order-detail-list?orderId=${order.id}`;
+                            fetch(url)
+                                .then((response) => response.json())
+                                .then((details) => {
+                                    console.log(details);
+                                    // Create a new HTML element to display the details
+                                    const detailTable = document.createElement("table");
+                                    const headerRow = document.createElement("tr");
+
+                                    // Create table header cells
+                                    const categoryNameHeader = document.createElement("th");
+                                    categoryNameHeader.textContent = "Loại Món Ăn";
+                                    headerRow.appendChild(categoryNameHeader);
+
+                                    const materialNameHeader = document.createElement("th");
+                                    materialNameHeader.textContent = "Tên Món Ăn";
+                                    headerRow.appendChild(materialNameHeader);
+
+                                    const quantityHeader = document.createElement("th");
+                                    quantityHeader.textContent = "Số Lượng";
+                                    headerRow.appendChild(quantityHeader);
+
+                                    const priceHeader = document.createElement("th");
+                                    priceHeader.textContent = "Đơn Giá";
+                                    headerRow.appendChild(priceHeader);
+
+                                    const totalAmountHeader = document.createElement("th");
+                                    totalAmountHeader.textContent = "Tổng Tiền";
+                                    headerRow.appendChild(totalAmountHeader);
+
+                                    detailTable.appendChild(headerRow);
+
+                                    // Loop through the details and add them to the table
+                                    details.forEach((detail) => {
+                                        const detailRow = document.createElement("tr");
+
+                                        const categoryNameCell = document.createElement("td");
+                                        categoryNameCell.textContent = detail.category_name;
+                                        detailRow.appendChild(categoryNameCell);
+
+                                        const materialNameCell = document.createElement("td");
+                                        materialNameCell.textContent = detail.material_name;
+                                        detailRow.appendChild(materialNameCell);
+
+                                        const quantityCell = document.createElement("td");
+                                        quantityCell.textContent = detail.quantity;
+                                        detailRow.appendChild(quantityCell);
+
+                                        const priceCell = document.createElement("td");
+                                        priceCell.textContent = detail.price;
+                                        detailRow.appendChild(priceCell);
+
+                                        const totalAmountCell = document.createElement("td");
+                                        totalAmountCell.textContent = detail.total_amount;
+                                        detailRow.appendChild(totalAmountCell);
+
+                                        detailTable.appendChild(detailRow);
+                                    });
+
+                                    // Create a popup window to display the details
+                                    const popup = document.createElement("div");
+                                    popup.classList.add("popup");
+                                    popup.appendChild(detailTable);
+                                    document.body.appendChild(popup);
+
+                                    // Close the popup when clicking outside of it
+                                    popup.addEventListener("click", (event) => {
+                                        if (event.target === popup) {
+                                            popup.remove();
+                                        }
+                                    });
+                                })
+                                .catch((error) => {
+                                    console.error(error);
+                                });
+                        }
+
+                        console.log(order);
+                        const row = document.createElement("tr");
+
+                        const stt = document.createElement("td");
+                        stt.innerText = index;
+
+                        const code = document.createElement("td");
+                        code.innerText = order.code;
+
+                        const totalAmount = document.createElement("td");
+                        totalAmount.innerText = order.totalAmount;
+                        // Populate the order time
+                        const status = document.createElement("td");
+                        if (order.status == 1) {
+                            status.innerText = "Chưa Giao"; // Populate the order date
+                        } else if (order.status == 2) {
+                            status.innerText = "Đang Giao";
+                        } else {
+                            status.innerText = "Đã Giao";
+                        }
+
+                        const createdAt = document.createElement("td");
+                        createdAt.innerText = order.createdAt;
+
+                        const button = document.createElement("button");
+                        button.innerText = "Xem Chi Tiết";
+                        button.style.marginLeft = "120px";
+                        button.addEventListener("click", () => {
+                            getDetails(); // Call the getDetails() function with the order's ID
+                        });
+
+                        row.appendChild(stt);
+                        row.appendChild(code);
+                        row.appendChild(totalAmount);
+                        row.appendChild(status);
+                        row.appendChild(createdAt);
+                        row.appendChild(button);
+
+                        // Add the row to the table
+                        orderList.appendChild(row);
+                        index++;
+                    });
+                });
+        </script>
+    </body>
+</html>

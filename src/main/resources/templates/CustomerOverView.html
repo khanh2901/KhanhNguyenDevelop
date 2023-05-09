@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Lover</title>
+	<link rel="stylesheet" th:href="@{/css/CustomerOverview.css}">
+	<link rel="stylesheet" th:href="@{/css/styte.css}">
+	  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	
+  </head>
+  <body>
+	<div th:replace="introduce :: header"></div>
+    <div class="menu">
+      <nav>
+        <input type="checkbox" id="check" />
+        <label for="check" class="checkbtn">
+          <ion-icon name="grid-outline"></ion-icon>
+        </label>
+
+        <label class="logo">FoodLover</label>
+
+        <ul>
+          <li><a href="#hero-section" class="active">Home</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#menu">Menu</a></li>
+          <li><a href="#testimonial">Reviews</a></li>
+        </ul>
+      </nav>
+    </div>
+    <!-- End Menu -->
+
+    <!-- Hero Section -->
+    <div class="section flex" id="hero-section">
+      <div class="text">
+        <h3 class="primary">
+          Không chỉ có thức ăn ngon <br />
+          Mà Còn Có Sự <span>Chất Lượng</span> Trong Cách Phục Vụ
+        </h3>
+
+        <p class="tertiary">
+          Một nhà hàng thành công không chỉ phục vụ đồ ăn ngon, 
+          mà còn phải có không gian ấm cúng, 
+          thiết kế đẹp mắt và dịch vụ chuyên nghiệp để tạo ra trải nghiệm tuyệt vời cho khách hàng
+        </p>
+
+        <a href="#menu" class="btn">Explore Menu</a>
+      </div>
+      <div class="visual">
+        <img src="/img/gallary-10.jpg" alt="" />
+      </div>
+    </div>
+    <!-- End Hero Section -->
+
+    <!-- How It Works -->
+    <div class="section" id="how-it-works">
+      <h2 class="secondary">Nhà Hàng Chúng Tôi Hoạt Động Như Thế Nào</h2>
+
+      <div class="container flex">
+        <div class="box">
+          <h3>Đặt Món , Đặt Bàn Dễ Dàng</h3>
+          <ion-icon name="timer-outline"></ion-icon>
+          <p>
+           Đáp Ứng Nhu Cầu Khách Hàng Về Dịch Vụ Đặt Bàn , Đặt Mon
+          </p>
+        </div>
+
+        <div class="box active">
+          <h3>Chất Lượng Tốt</h3>
+          <ion-icon name="trophy-outline"></ion-icon>
+          <p>
+            Sản Phẩm Nhà Hàng Mang Lại Luôn Luôn Là Tốt Nhất-Ngon Nhất
+          </p>
+        </div>
+
+        <div class="box">
+          <h3>Giao Hàng Nhanh</h3>
+          <ion-icon name="checkmark-done-circle-outline"></ion-icon>
+          <p>
+           Sự Tốc Độ Trong Việc Giao Hàng.Giúp Khách Hàng Có Trải Nghiệm Tốt Nhất
+          </p>
+        </div>
+      </div>
+    </div>
+    <!-- End How It Works -->
+
+    <!-- About -->
+    <div class="section" id="about">
+      <div class="container flex">
+        <div class="visual">
+          <img src="/img/LogoK.png" alt="" />
+        </div>
+        <div class="text">
+          <div class="secondary">Về Nhà Hàng Của Chúng Tôi</div>
+          <h2 class="primary">Món Ăn Đa Dạng</h2>
+
+          <h3 class="tertiary">Ẩm Thực Phong Phú</h3>
+
+          <h2>
+           Những giá trị lịch sử, văn hóa và  ẩm thực độc đáo của Pháp - Việt hòa quyện một cách hoàn hảo, 
+           đem đến trải nghiệm độc đáo giữa lòng Sài Gòn. Với sự kết hợp Đông - Tây khéo léo , 
+           KKFOOD đưa bạn đến với không gian ấm cúng, sang trọng và đậm chất nghệ thuật.
+          </h2>
+
+        </div>
+      </div>
+    </div>
+    <!-- End About -->
+
+    <!-- Restaurant Menu -->
+    <div class="section" id="menu">
+      <div class="container">
+        <ul class="category">
+          <li>Món Ngon Đa Dạng - Độc Đáo - Hấp Dẫn</li>
+      
+        </ul>
+        <div class="container">
+          <div class="restaurant-menu">
+      </div>
+    </div>
+    <a href="http://localhost:9000/food-sale" class="btn1">CHECK MENU</a>
+
+    <div class="footer">
+      <div class="container flex">
+        <div class="footer-about">
+          <h2>About</h2>
+          <p>
+           Số 303-Phạm Văn Đồng-Phường 1-Gò Vấp
+          <p>
+         	 Thành phố Hồ Chí Minh, Việt Nam
+          </p>
+          <p>
+        	  Điện thoại: +84 369 012 865
+          </p>
+          <p>
+			Email: Khanhnq@aloapp.vn
+          </p>
+        </div>
+        <div class="footer-category">
+          <h2>Our Menu</h2>
+
+          <ul>
+            <li>Đồ Nướng</li>
+            <li>Đồ Biển</li>
+            <li>Các Món Rau</li>
+            <li>Lẩu</li>
+            <li>Các Loại Đồ Uống</li>
+          </ul>
+        </div>
+
+        <div class="quick-links">
+          <h2>Quick Links</h2>
+
+          <ul>
+            <li>MENU</li>
+            <li>Quản Lý Đơn Hàng</li>
+            <li>Đặt Bàn</li>
+
+          </ul>
+        </div>
+
+        <div class="get-in-touch">
+          <h2>Get in touch</h2>
+          <ul>
+            <li>Account</li>
+            <li>Support Center</li>
+            <li>Feedback</li>
+            <li>Suggession</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="copyright">
+        <p>Copyright &copy; 2022. All Rights Reserved.</p>
+      </div>
+    </div>
+		<script th:inline="javascript">
+  var token = /*[[${session.accesstoken}]]*/ '';
+  var numItemsDisplayed = 0;
+
+  $(document).ready(function() {
+    // Call API to get menu items
+    $.ajax({
+      url: "http://localhost:9000/food/list",
+      type: "GET",
+      dataType: "json",
+      headers: {
+        "Authorization": token
+      },
+      success: function(data) {
+        // Loop through menu items and create HTML for each
+        $.each(data, function(index, item) {
+          if (numItemsDisplayed >= 6) {
+            // Limit of 6 items has been reached, exit loop
+            return false;
+          }
+          var menuItemHTML = '<div class="menu-item">' +
+                              '<img src="' +/img/+ item.avatar + '" width="150px" height="180px" alt="" />' +
+                              '<div class="title">' + item.name + '</div>' +
+                              '<div class="location">' + 'Thơm ngon - Hấp Dẫn</div>' +
+                              '<div class="order flex">' +
+                                '<div class="price">' + item.price + ' VND </div>' +
+                                '<a href="http://localhost:9000/food-sale" class="btn btn-menu">Order Now</a>' +
+                              '</div>' +
+                            '</div>';
+          // Append HTML for menu item to the restaurant menu
+          $('.restaurant-menu').append(menuItemHTML);
+          numItemsDisplayed++;
+        });
+      },
+      error: function(xhr, status, error) {
+        console.log("Error calling API: " + error);
+      }
+    });
+  });
+</script>
+
+
+    <script
+      type="module"
+      src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.esm.js"
+    ></script>
+    <script
+      nomodule
+      src="https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/ionic.js"
+    ></script>
+  </body>
+</html>

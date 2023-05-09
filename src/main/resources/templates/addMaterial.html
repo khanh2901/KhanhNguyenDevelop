@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" th:href="@{/css/material.css}" />
+
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+    </head>
+    <body>
+        <div th:replace="header :: header"></div>
+
+        <form th:action="@{/api/materials/create}" onsubmit="createObject(event);" method="post">
+            <h2>Tạo Nguyên Liệu</h2>
+            <label for="name">Tên Nguyên Liệu</label> <input type="text" id="name" name="name" th:value="${name}" placeholder="Tên nguyên liệu" required />
+            <br />
+            <label for="category-id">Danh Mục</label>
+
+            <select id="category-id" name="categoryId" required>
+                <option value="" selected disabled hidden>Chọn danh mục</option>
+            </select>
+            <br />
+            <label for="unit-id">Đơn Vị</label>
+            <select id="unit-id" name="unitId" required>
+                <option value="" selected disabled hidden>Chọn đơn vị</option>
+            </select>
+            <br />
+            <label for="wastage-rate">Tỉ lệ hao hụt cho phép</label> <input type="number" id="wastage-rate" name="wastageRate" th:value="${wastageRate}" placeholder="Tỉ lệ hao hụt cho phép" /> <br />
+            <label for="out-stock-alert-quantity">Số lượng Cảnh Báo Hết Hàng</label>
+            <input type="number" id="out-stock-alert-quantity" name="outStockAlertQuantity" th:value="${outStockAlertQuantity}" placeholder="Số lượng Cảnh Báo Hết Hàng" /> <br />
+            <label for="retail-price">Giá Nhập</label> <input type="number" id="retail-price" name="retailPrice" th:value="${retailPrice}" placeholder="Giá Nhập" /> <br />
+            <label for="cost-price">Giá Bán</label> <input type="number" name="costPrice" th:value="${costPrice}" placeholder="Giá Bán" /> <input type="hidden" id="category-name" name="categoryName" th:value="${categoryName}" />
+            <input type="hidden" id="unit-name" name="unitName" th:value="${unitName}" />
+            <button type="submit">Tạo mới</button>
+        </form>
+        <script th:inline="javascript">
+            var token = /*[[${session.accesstoken}]]*/ "";
+
+            var categorySelect = document.getElementById("category-id");
+            var unitSelect = document.getElementById("unit-id");
+
+            // Lấy danh sách danh mục từ API
+            fetch("http://localhost:9000/categories/list", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+            })
+                .then((response) => response.json())
+                .then((categories) => {
+                    // Thêm các option vào danh sách danh mục
+                    categories.forEach((category) => {
+                        var option = document.createElement("option");
+                        option.value = category.id;
+                        option.text = category.name;
+                        categorySelect.add(option);
+                    });
+                })
+                .catch((error) => console.log(error));
+
+            // Lấy danh sách đơn vị từ API
+            fetch("http://localhost:9000/units/list", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: token,
+                },
+            })
+                .then((response) => response.json())
+                .then((units) => {
+                    // Thêm các option vào danh sách đơn vị
+                    units.forEach((unit) => {
+                        var option = document.createElement("option");
+                        option.value = unit.id;
+                        option.text = unit.name;
+                        unitSelect.add(option);
+                    });
+                })
+                .catch((error) => console.log(error));
+
+            function createObject(event) {
+                event.preventDefault();
+                var form = event.target;
+                var data = {
+                    name: form.elements.name.value,
+                    categoryId: form.elements.categoryId.value,
+                    unitId: form.elements.unitId.value,
+                    wastageRate: form.elements.wastageRate.value,
+                    outStockAlertQuantity: form.elements.outStockAlertQuantity.value,
+                    retailPrice: form.elements.retailPrice.value,
+                    costPrice: form.elements.costPrice.value,
+                };
+
+                // Chuyển đổi object data thành query string
+                var queryString = Object.keys(data)
+                    .map((key) => key + "=" + data[key])
+                    .join("&");
+
+                fetch("http://localhost:9000/materials/create?" + queryString, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: token,
+                    },
+                })
+                    .then((response) => {
+                        console.log(response);
+                        alert("Đã tạo thành công");
+                        form.reset();
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+        </script>
+    </body>
+</html>

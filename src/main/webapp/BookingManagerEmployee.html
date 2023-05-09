@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:temporals="http://www.thymeleaf.org/extras/temporals">
+
+
+<head>
+<link rel="stylesheet" th:href="@{/css/booking.css}">
+<link rel="stylesheet" th:href="@{/css/styte.css}">
+
+</head>
+<body>
+	<div th:replace="HeaderForEmployee :: header"></div>
+
+
+	
+	<form  th:action="@{/create-booking}" onsubmit="createObject(event);" method="post">
+		<h2>Đặt Bàn</h2>
+		<br>
+		<input type="number" name="slot" placeholder="Số người" required />
+		<input type="text" name="description" placeholder="Mô tả" />
+<input type="date" name="dateBooking" placeholder="Ngày Đặt Bàn" th:min="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}" />
+		<label for="bookingTime">Thời gian nhận bàn</label>
+		<div class="booking-time-container">
+		 <select id="bookingTime"
+			name="bookingTime" required>
+			<option value="" selected disabled hidden>Giờ đặt bàn</option>
+			<option value="10:00">10:00</option>
+			<option value="11:00">11:00</option>
+			<option value="12:00">12:00</option>
+			<option value="13:00">13:00</option>
+			<option value="14:00">14:00</option>
+			<option value="15:00">15:00</option>
+			<option value="16:00">16:00</option>
+			<option value="17:00">17:00</option>
+			<option value="18:00">18:00</option>
+			<option value="19:00">19:00</option>
+			<option value="20:00">20:00</option>
+			<option value="21:00">21:00</option>
+			<option value="22:00">22:00</option>
+		</select> 
+		<br>
+		<br>
+		<label for="bookingTimeEnd">-</label>
+		 <select id="bookingTimeEnd"
+			name="bookingTimeEnd" required>
+			<option value="" selected disabled hidden>Giờ trả bàn</option>
+			<option value="10:00">10:00</option>
+			<option value="11:00">11:00</option>
+			<option value="12:00">12:00</option>
+			<option value="13:00">13:00</option>
+			<option value="14:00">14:00</option>
+			<option value="15:00">15:00</option>
+			<option value="16:00">16:00</option>
+			<option value="17:00">17:00</option>
+			<option value="18:00">18:00</option>
+			<option value="19:00">19:00</option>
+			<option value="20:00">20:00</option>
+			<option value="21:00">21:00</option>
+			<option value="22:00">22:00</option>
+		</select> 
+		</div>
+		<br>
+		<br>
+		<br>
+		<button type="submit">Xác Nhận Đặt Bàn</button>
+	</form>
+
+	<script th:inline="javascript">   
+	  var token = /*[[${session.accesstoken}]]*/ '';
+	  function createObject(event) {
+		  event.preventDefault();
+		  var form = event.target;
+		  
+		// Get the value of the date input element
+		  var dateInput = document.querySelector("input[name='dateBooking']");
+		  var selectedDate = dateInput.value;
+		  var formattedDate = selectedDate.split("-").reverse().join("-");
+		  console.log(formattedDate)
+		  
+		  var data = {
+		    slot: form.elements.slot.value,
+		    description: form.elements.description.value,
+		    bookingTime: form.elements.bookingTime.value,
+		    bookingTimeEnd: form.elements.bookingTimeEnd.value,
+		    dateBooking: formattedDate
+		  };
+		  
+		  console.log(data.slot);
+		  console.log(data.description);
+		  console.log(data.bookingTime);
+		  
+		  // Chuyển đổi object data thành query string
+		  var queryString = Object.keys(data).map(key => key + '=' + data[key]).join('&');
+
+		  fetch('http://localhost:9000/create-booking?' + queryString, {
+		    method: 'POST',
+		    headers: {
+		      'Content-Type': 'application/json',
+		      'Authorization': token
+		    }
+		  })
+		 .then(response => {
+		  console.log(response);
+		  response.text().then(data => {
+		    console.log(data);
+		    if (data === "Th?i gian tr? b�n kh�ng th? b?ng th?i gian ??t b�n") {
+		      alert("Thời gian trả bàn không thể bằng thời gian đặt bàn");
+		      
+		    }else if(data === "Th?i gian tr? b�n kh�ng th? nh? h?n th?i gian ??t b�n"){
+		    	
+		    	alert("Thời gian trả bàn không thể nhỏ hơn thời gian đặt bàn");
+		    	
+		    }else if(data =="B?n ?� ??t b�n trong ng�y n�y r?i!"){
+		    	
+		    	alert("Bạn đã đặt bàn trong ngày này rồi!");
+		    }
+		    else{
+		      alert("Bạn Đã Đặt Bàn Thành Công");
+		    }
+		  });
+		  form.reset();
+		})
+		.catch(error => {
+		  console.error(error);
+		});
+		}
+	</script>
+</body>
+</html>

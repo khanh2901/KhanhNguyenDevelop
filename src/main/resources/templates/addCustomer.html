@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Tạo tài khoản khách hàng</title>
+        <link rel="stylesheet" th:href="@{/css/signup.css}" />
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+    </head>
+    <body>
+        <div th:replace="header :: header"></div>
+
+        <form th:action="@{/user/create}" onsubmit="createObject(event);" method="post">
+            <h2>Tạo tài khoản</h2>
+            <label for="Name">Tên Đầu</label> <input type="text" id="firstName" name="firstName" th:required th:value="${firstName}" /> <br />
+            <label for="phone">Tên Cuối</label> <input type="text" id="lastName" name="LastName" th:required th:value="${LastName}" /> <br />
+            <label for="gender-id">Giới Tính</label>
+            <select id="gender-id" name="genDer" required>
+                <option value="" selected disabled hidden>Chọn Giới Tính</option>
+            </select>
+            <br />
+            <br />
+            <label for="birthDay">Ngày Sinh</label> <input type="date" id="birthDay" name="birthDay" th:required th:value="${birthDay}" /> <br />
+            <label for="email">Email</label> <input type="text" id="email" name="email" th:required th:value="${email}" /> <br />
+            <br />
+            <label for="phone">Số Điện Thoại</label> <input type="text" id="_phone" name="phone" th:required th:value="${phone}" />
+            <p th:each="err : ${#fields.errors('global')}" th:text="${err}" class="error" />
+            <br />
+            <label for="username">Tài Khoản</label> <input type="text" id="username" name="username" th:required th:value="${username}" /> <br />
+            <label for="password">Mật Khẩu</label> <input type="password" id="password" name="password" th:required /> <br />
+            <br />
+            <br />
+            <br />
+            <button type="submit">Tạo tài khoản</button>
+        </form>
+        <script th:inline="javascript">
+            var roleSelect = document.getElementById("role-id");
+            var genderSelect = document.getElementById("gender-id");
+
+            var arrgenderSelect = [
+                { value: 1, gender: "Nam" },
+                { value: 2, gender: "Nữ" },
+            ];
+
+            arrgenderSelect.forEach((e) => {
+                var option1 = document.createElement("option");
+                option1.value = e.value;
+                option1.text = e.gender;
+                genderSelect.add(option1);
+            });
+
+            function createObject(event) {
+                event.preventDefault();
+
+                var form = event.target;
+
+                const birthDay = form.elements.birthDay.valueAsDate;
+                const year = birthDay.getFullYear();
+                const month = (birthDay.getMonth() + 1).toString().padStart(2, "0");
+                const day = birthDay.getDate().toString().padStart(2, "0");
+
+                const birthDayFormatted = `${year}/${month}/${day}`;
+
+                var data = {
+                    firstName: form.elements.firstName.value,
+                    LastName: form.elements.LastName.value,
+                    genDer: form.elements.genDer.value,
+                    birthDay: birthDayFormatted,
+                    email: form.elements.email.value,
+                    username: form.elements.username.value,
+                    password: form.elements.password.value,
+                    phone: form.elements.phone.value,
+                    role: 3,
+                };
+
+                var token = /*[[${session.accesstoken}]]*/ "";
+                console.log(data);
+                // Chuyển đổi object data thành query string
+                var queryString = Object.keys(data)
+                    .map((key) => key + "=" + data[key])
+                    .join("&");
+
+                fetch("http://localhost:9000/user/create?" + queryString, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: token,
+                    },
+                })
+                    .then((response) => {
+                        console.log(response);
+                        var arrString = [];
+                        arrString = response.url.split("?");
+                        if (arrString[1] == "errorMessage=S%E1%BB%91+%C4%91i%E1%BB%87n+tho%E1%BA%A1i+%C4%91%C3%A3+t%E1%BB%93n+t%E1%BA%A1i%21") {
+                            alert("Số Điện Thoại Đã Được Sử Dụng!!!");
+                        } else {
+                            alert("Đã Tạo Thành Công");
+                        }
+                        form.reset();
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+        </script>
+    </body>
+</html>

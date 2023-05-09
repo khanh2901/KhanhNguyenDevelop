@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>Login</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-image: url("img/background.jpg.jpg");
+                background-size: cover;
+                background-position: center;
+                margin-top: 170px;
+            }
+            .container {
+                max-width: 400px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: rgba(255, 255, 255, 0.8);
+                border-radius: 5px;
+                box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+            }
+            h1 {
+                color: #333;
+                text-align: center;
+                margin-top: 50px;
+            }
+            label {
+                display: block;
+                margin-bottom: 10px;
+                font-weight: bold;
+                color: #333;
+            }
+            input[type="text"],
+            input[type="password"] {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 20px;
+                border-radius: 3px;
+                border: none;
+                box-shadow: inset 0px 1px 3px rgba(0, 0, 0, 0.1);
+            }
+            button[type="submit"] {
+                background-color: #007bff;
+                color: #fff;
+                padding: 10px 20px;
+                border-radius: 3px;
+                border: none;
+                box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.3);
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+            button[type="submit"]:hover {
+                background-color: #0069d9;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>ĐĂNG NHẬP</h1>
+
+            <form th:action="@{/login}" method="post">
+                <div>
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required />
+                </div>
+                <div>
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required />
+                </div>
+                <div>
+                    <button type="submit">Login</button>
+                </div>
+                <br />
+                <div>
+                    <a href="#">Quên mật khẩu</a>
+                    <span> | </span>
+                    <a th:href="@{/register-customer}">Đăng ký tài khoản</a>
+                </div>
+            </form>
+        </div>
+    </body>
+</html>

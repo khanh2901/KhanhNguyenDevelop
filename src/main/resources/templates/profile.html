@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Trang cá nhân</title>
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+
+        <style>
+            body {
+                background-image: url("/img/brProfide.jpg");
+                background-repeat: no-repeat;
+                background-size: 100%;
+            }
+
+            .profile {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-top: 90px;
+            }
+
+            .profile img {
+                width: 200px;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 50%;
+                margin-bottom: 20px;
+            }
+
+            .profile h2 {
+                font-size: 24px;
+                margin-bottom: 10px;
+            }
+
+            .profile p {
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+
+            #popup {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: white;
+                padding: 20px;
+                border: 1px solid black;
+            }
+
+            .containerUser {
+                background-color: #f7f7f7;
+                border: 1px solid #ddd;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .containerUser h2 {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 10px;
+            }
+
+            .containerUser p {
+                font-size: 16px;
+                margin-bottom: 5px;
+            }
+
+            button {
+                font-size: 16px;
+                font-weight: bold;
+                color: #fff;
+                background-color: #4caf50;
+                border: none;
+                border-radius: 4px;
+                padding: 10px 20px;
+                cursor: pointer;
+            }
+
+            button:hover {
+                background-color: #3e8e41;
+            }
+
+            #popup {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #fff;
+                padding: 20px;
+                border: 2px solid #ccc;
+                box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+                width: 200px;
+            }
+
+            #update-form {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            #update-form input[type="text"],
+            #update-form input[type="email"],
+            #update-form select {
+                width: 100%;
+                margin-bottom: 10px;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                font-size: 16px;
+            }
+
+            #update-form button {
+                background-color: #4caf50;
+                color: #fff;
+                border: none;
+                border-radius: 4px;
+                padding: 10px 20px;
+                font-size: 16px;
+                cursor: pointer;
+            }
+
+            #update-form button:hover {
+                background-color: #3e8e41;
+            }
+        </style>
+    </head>
+    <body>
+        <div th:replace="header :: header"></div>
+
+        <div class="profile">
+            <br />
+            <label for="avatar-input"> <img id="avatar" src="" alt="Avatar" /> </label>
+            <form id="upload-form" method="post" enctype="multipart/form-data">
+                <input id="avatar-input" type="file" name="image" />
+                <button type="submit">Cập Nhật Ảnh</button>
+            </form>
+            <br />
+            <div class="containerUser">
+                <h2 id="name"></h2>
+                <p id="email"></p>
+                <p id="phone"></p>
+                <button onclick="openPopup()">Chỉnh sửa thông tin</button>
+            </div>
+            <br />
+            <br />
+            <br />
+            <button type="button" onclick="logout()">Đăng Xuất</button>
+
+            <div id="popup" style="display: none;">
+                <form id="update-form">
+                    <input type="text" name="firstName" placeholder="First name" /> <input type="text" name="LastName" placeholder="Last name" /> <input type="email" name="email" placeholder="Email" />
+                    <input type="text" name="phone" placeholder="Phone" /> <label for="role-id"></label>
+                    <select id="role-id" name="role" required>
+                        <option value="" selected disabled hidden>Chọn chức vụ</option>
+                    </select>
+                    <button type="button" onclick="updateUser()">Update</button>
+                </form>
+            </div>
+        </div>
+
+        <script th:inline="javascript">
+            var genderSelect = document.getElementById("gender-id");
+
+            var token = /*[[${session.accesstoken}]]*/ "";
+
+            const decodedSession = JSON.parse(atob(token));
+
+            var data = {
+                id: decodedSession.id,
+            };
+
+            var queryString = Object.keys(data)
+                .map((key) => key + "=" + data[key])
+                .join("&");
+
+            // Define functions
+            function logout() {
+                localStorage.removeItem("accessToken"); // Remove the access token from the local storage
+                window.location.href = "/login"; // Redirect the user to the login page
+            }
+
+            function openPopup() {
+                var popup = document.getElementById("popup");
+                popup.style.display = "block";
+            }
+
+            function closePopup() {
+                var popup = document.getElementById("popup");
+                popup.style.display = "none";
+            }
+
+            // Attach event handlers
+            var popup = document.getElementById("popup");
+            popup.onclick = function (event) {
+                if (event.target == popup) {
+                    popup.style.display = "none";
+                }
+            };
+            fetch("http://localhost:9000/profile-fage?" + queryString)
+                .then((response) => response.json())
+                .then((user) => {
+                    document.getElementById("avatar").src = "/img/" + user.avatar;
+                    document.getElementById("name").textContent = user.fullName;
+                    document.getElementById("email").textContent = "Email: " + user.email;
+                    document.getElementById("phone").textContent = "Contact: " + user._phone;
+
+                    $(document).ready(function () {
+                        $("#upload-form").submit(function (event) {
+                            event.preventDefault();
+                            var token = /*[[${session.accesstoken}]]*/ "";
+                            const decodedSession = JSON.parse(atob(token));
+                            var formData = new FormData(this);
+                            var url = `http://localhost:9000/user/${decodedSession.id}/update-image`; // Thay đổi đường dẫn URL tương ứng với API của bạn
+                            $.ajax({
+                                url: url,
+                                type: "POST",
+                                data: formData,
+                                processData: false,
+                                contentType: false,
+                                success: function (result) {
+                                    alert("Cập Nhật Ảnh Thành Công!");
+                                    location.reload();
+                                },
+                                error: function (xhr, status, error) {
+                                    alert("Error: " + error.message);
+                                },
+                            });
+                        });
+                    });
+                });
+            var roleSelect = document.getElementById("role-id");
+
+            var arrRoleSelect = [
+                { value: 1, role: "Chủ Nhà Hàng" },
+                { value: 2, role: "Nhân Viên" },
+                { value: 4, role: "Kế Toán" },
+            ];
+
+            arrRoleSelect.forEach((e) => {
+                var option2 = document.createElement("option");
+                option2.value = e.value;
+                option2.text = e.role;
+                roleSelect.add(option2);
+            });
+
+            function updateUser() {
+                var form = event.target;
+
+                // Get form data
+                const firstName = document.querySelector('input[name="firstName"]').value;
+                const LastName = document.querySelector('input[name="LastName"]').value;
+                const phone = document.querySelector('input[name="phone"]').value;
+                const email = document.querySelector('input[name="email"]').value;
+                const role = document.getElementById("role-id").value;
+
+                var dataUpdate = {
+                    firstName: firstName,
+                    LastName: LastName,
+                    phone: phone,
+                    email: email,
+                    role: role,
+                };
+                var queryString = Object.keys(dataUpdate)
+                    .map((key) => key + "=" + dataUpdate[key])
+                    .join("&");
+
+                // Call API
+                fetch(`http://localhost:9000/user/${decodedSession.id}/update?` + queryString, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then((respose) => location.reload())
+                    .then((user) => {
+                        // Update user information on the page
+                        document.getElementById("name").textContent = user.fullName;
+                        document.getElementById("email").textContent = user.email;
+                        document.getElementById("phone").textContent = user.phone;
+                        // Close the popup
+                        closePopup();
+                    })
+                    .catch((error) => {
+                        console.error("There was a problem with the fetch operation:", error);
+                    });
+            }
+        </script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </body>
+</html>

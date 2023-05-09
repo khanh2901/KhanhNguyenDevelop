@@ -1,0 +1,100 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f2f2;
+  background-image: url("/img/booking.jpg");
+   background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+form {
+  background-color: #fff;
+  max-width: 600px;
+  max-height: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  margin-top: 100px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+}
+input[type="date"],
+input[type="number"],
+input[type="text"],
+input[type="email"],
+input[type="password"]
+ {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  margin-bottom: 10px;
+}
+
+button[type="submit"] {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+  background-color: #3e8e41;
+}
+#bookingTime {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#bookingTime option[disabled]:first-of-type {
+  display: none;
+}
+
+#bookingTime option:first-of-type {
+  color: #999;
+}
+
+
+#bookingTimeEnd {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #fff;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+#bookingTimeEnd option[disabled]:first-of-type {
+  display: none;
+}
+
+#bookingTimeEnd option:first-of-type {
+  color: #999;
+}
+
+.booking-time-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.booking-time-container select {
+  margin: 0 10px;
+}
+

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Update Customer</title>
+        <link rel="stylesheet" th:href="@{/css/signup.css}" />
+    </head>
+    <body>
+        <h1>Update Customer:</h1>
+
+        <form th:action="@{/{id}/update(id = ${customerUpdateInfor.getId()})}" th:object="${customerUpdateInfor}" method="post">
+            <label for="Name">Họ Và Tên</label>
+            <input type="text" id="name" name="Name" th:required />
+            <br />
+            <label for="phone">Số điện thoại</label>
+            <input type="text" id="phone" name="Phone" th:required />
+            <br />
+            <label for="email">Email</label>
+            <input type="text" id="email" name="Email" th:required />
+            <br />
+            <button type="submit">Cập Nhật Tài Khoản</button>
+        </form>
+
+        <div th:if="${response}" th:utext="${response}" style="color: red; font-style: italic;">...</div>
+    </body>
+</html>

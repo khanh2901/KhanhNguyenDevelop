@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    </head>
+    <style></style>
+
+    <body>
+        <header class="header">
+            <ul id="nav">
+                <a id="image"> <img width="130px" alt="" src="/img/LogoK.png" /> </a>
+                <li class="abc"><a th:href="@{http://localhost:9000/employee-work-view}">Tổng Quan</a></li>
+                <li class="abc">
+                    <a th:href="@{/food/list/map-to-view/employee}"> Quản Lý Món Ăn</a>
+                    <ul class="subnav">
+                        <li class="foodmanager"><a th:href="@{/food/list/map-to-view/employee}">Danh Sách Món Ăn</a></li>
+                    </ul>
+                </li>
+                <li class="abc">
+                    <a th:href="@{/order-employee}"> Quản Lý Đơn Hàng</a>
+                </li>
+                <li class="abc">
+                    <a th:href="@{/booking-manager/employee}">Quản Lý Đặt Bàn </a>
+                </li>
+                <div>
+                    <a th:href="@{/profile-employee}"><i class="fas fa-user"></i> Trang Cá Nhân</a>
+                </div>
+            </ul>
+        </header>
+    </body>
+</html>

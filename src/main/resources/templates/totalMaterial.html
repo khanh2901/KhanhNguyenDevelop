@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quản lý kho</title>
+<link rel="stylesheet" th:href="@{/css/styte.css}">
+ <link rel="stylesheet" th:href="@{/css/wareHouse.css}">
+
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+
+	<div class="container">
+		<table>
+			<thead>
+				<tr>
+					<th>Stt</th>
+					<th>Tên nguyên liệu</th>
+					<th>Số Lượng</th>
+					<th>Tỉ Lệ Hao Hụt</th>
+					<th>Giá Nhập</th>
+				</tr>
+			</thead>
+			<tbody id="ingredients-list">
+			</tbody>
+		</table>
+	</div>
+
+	<script th:inline="javascript">
+  var token = /*[[${session.accesstoken}]]*/ '';
+
+  var index = 0;
+  fetch('http://localhost:9000/materials/total-quantity', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token
+    }
+  })
+  .then(response => response.json())
+  .then(ingredients => { 
+	  console.log(ingredients)
+    // Xử lý danh sách nguyên liệu ở đây
+    const ingredientsList = document.getElementById('ingredients-list');
+	  var index = 1;
+    ingredients.forEach(ingredient => {
+      const tr = document.createElement('tr');
+      
+     
+      const tdId = document.createElement('td');
+      tdId.textContent = index;
+      
+      const tdName = document.createElement('td');
+      tdName.textContent = ingredient.name;
+
+      const tdTotal = document.createElement('td');
+      tdTotal.textContent = ingredient.totalQuantity;
+      
+      const tdWasterRate = document.createElement('td') ;
+      tdWasterRate.textContent = ingredient.wastageRate;
+      
+      const retailPrice = document.createElement('td') ;
+      retailPrice.textContent = ingredient.retailPrice;
+
+
+      tr.appendChild(tdId);
+	  tr.appendChild(tdName);
+	  tr.appendChild(tdTotal);
+	  tr.appendChild(tdWasterRate);
+	  tr.appendChild(retailPrice);
+
+
+
+      ingredientsList.appendChild(tr);
+      index++;
+    })
+   
+  })
+  .catch(error => console.log(error));
+</script>
+<body>
+</html>

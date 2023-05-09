@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quản lý kho</title>
+<link rel="stylesheet" th:href="@{/css/styte.css}">
+<link rel="stylesheet" th:href="@{/css/foodList.css}">
+
+<style>
+* {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+	font-family: "Lato", "Lucida Grande", "Lucida Sans Unicode", Tahoma,
+		Sans-Serif;
+}
+
+:root {
+	--main-color: #e8272e;
+	--text-color: #777;
+}
+
+.container {
+	margin: 0 80px;
+}
+
+.content {
+	padding: 10px;
+	display: grid;
+	grid-template-columns: 1fr 250px;
+	gap: 30px;
+}
+
+a {
+	text-decoration: none;
+}
+
+h2 {
+	font-family: "Caveat", cursive;
+}
+
+.fa-calendar-days, .fa-comment-dots {
+	font-size: 10px;
+	color: var(--main-color);
+	margin-right: 5px;
+}
+
+li>div {
+	max-height: 150px;
+	overflow: overlay;
+	padding: 10px 20px;
+}
+
+li>div h2 {
+	font-size: 16px;
+}
+
+li span {
+	font-size: 10px;
+	margin-right: 5px;
+}
+
+li p {
+	font-size: 18px;
+	margin-top: 2px;
+	line-height: 1.6;
+	color: var(--text-color);
+}
+
+li div a {
+	color: var(--main-color);
+	font-size: 12px;
+}
+
+input {
+	width: 100%;
+	border: 1px solid #ddd;
+	padding: 5px 10px;
+	background-color: white;
+	border-radius: 30px;
+	outline: none;
+}
+
+input::placeholder {
+	display: flex;
+	align-items: center;
+	color: var(--text-color);
+}
+
+.search {
+	position: relative;
+}
+
+.search .fa-magnifying-glass {
+	font-size: 15px;
+	position: absolute;
+	top: 8px;
+	right: 10px;
+	display: flex;
+	align-items: center;
+}
+
+.side-bar h2 {
+	font-size: 16px;
+	margin: 10px 0 20px;
+	position: relative;
+}
+
+.side-bar h2::before {
+	content: "";
+	position: absolute;
+	left: 0;
+	bottom: -8px;
+	width: 100%;
+	height: 5%;
+	background: #ddd;
+}
+
+.categories div {
+	color: var(--text-color);
+	font-size: 12px;
+	padding: 0 5px 0 0;
+	margin-bottom: 2px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.fa-hand-point-right {
+	margin-right: 10px;
+	font-size: 10px;
+}
+
+.recent-posts div {
+	width: 100%;
+	display: flex;
+	margin-bottom: 5px;
+}
+
+.recent-posts div img {
+	width: 60px;
+	height: 60px;
+	border-radius: 5px;
+	margin-right: 8px;
+}
+
+.recent-posts div div {
+	justify-content: space-evenly;
+	flex-direction: column;
+}
+
+.recent-posts div div h3 {
+	font-size: 10px;
+}
+
+.recent-posts .recent-details {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	font-size: 8px;
+}
+
+.recent-details>span {
+	margin-right: 10px;
+}
+
+.ads img {
+	width: 100%;
+	margin-top: 25px;
+}
+
+.insta div {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 80px) 80px;
+	gap: 5px;
+}
+
+.insta img {
+	width: 100%;
+	border-radius: 5px;
+}
+
+.tags {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, 80px) 80px;
+}
+
+.tags span {
+	font-size: 10px;
+	color: var(--text-color);
+	background-color: #f6f2f2;
+	margin: 5px;
+	padding: 3px;
+	border-radius: 5px;
+	display: flex;
+	justify-content: center;
+}
+
+.pages {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 5px;
+	gap: 10px;
+	margin-bottom: 80px;
+}
+
+.pages span {
+	width: 25px;
+	height: 25px;
+	font-size: 10px;
+	color: var(--text-color);
+	background-color: #ddd;
+	border-radius: 50%;
+	border: 1px solid #999;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.pages .active {
+	color: white;
+	background-color: var(--main-color);
+}
+
+.subscribe {
+	width: 80%;
+	margin: auto;
+	margin-bottom: -35px;
+	position: relative;
+	background-color: var(--main-color);
+	border-radius: 8px;
+	padding: 20px 20px;
+	display: flex;
+	color: white;
+	z-index: 1;
+}
+
+.subscribe>div {
+	margin-right: 60px;
+}
+
+.subscribe h2 {
+	font-size: 16px;
+	font-weight: bold;
+	margin-bottom: 5px;
+	font-family: "Caveat", cursive;
+}
+
+.subscribe p {
+	font-size: 12px;
+}
+
+form {
+	width: 100%;
+	display: flex;
+	padding: 5px;
+	border: 1px solid;
+	border-radius: 30px;
+	height: 40px;
+	gap: 5px;
+}
+
+.subscribe input {
+	display: flex;
+	border: none;
+	background: var(--main-color);
+	border-radius: 30px;
+}
+
+form input::placeholder {
+	display: flex;
+	align-items: center;
+	color: white;
+	font-size: 10px;
+}
+
+button {
+	background: white;
+	border-radius: 30px;
+	color: var(--main-color);
+	padding: 4px 6px;
+	display: flex;
+	align-items: center;
+	border: none;
+	cursor: pointer;
+}
+
+footer {
+	height: 60px;
+	background: black;
+	overflow: hidden;
+}
+
+footer img {
+	width: 100%;
+	object-fit: cover;
+	opacity: 0.2;
+}
+</style>
+<link rel="stylesheet" th:href="@{/css/styte.css}">
+
+</head>
+<body>
+	<!--Challenge From elzero.org
+https://elzero.org/frontend-food-menu-and-sidebar/
+-->
+	<div th:replace="header :: header"></div>
+	<br>
+	<br>
+	<br>
+	<br>
+	<div class="container">
+		<div class="content">
+			<section class="left-side">
+				<ul>
+				</ul>
+			</section>
+		</div>
+
+		<script th:inline="javascript">   
+		
+	
+	
+	var token = /*[[${session.accesstoken}]]*/ '';
+	
+	const foodList = document.querySelector('.left-side ul');
+	let row = null;
+	let counter = 0;
+	
+	fetch('http://localhost:9000/food/list/pause', {
+	    headers: {
+	        'Authorization': token,
+	    }
+	})
+	.then(response => response.json())
+	.then(data => {
+	    data.forEach(food => {
+        if (counter % 6 === 0) {
+            row = document.createElement('div');
+            row.style.display = 'flex';
+            row.style.marginBottom = '10px';
+            foodList.appendChild(row);
+        }
+
+        const li = document.createElement('li');
+        li.style.display = 'flex';
+        li.style.alignItems = 'center';
+        li.style.backgroundColor = '#f6f2f2';
+        li.style.marginRight = '10px';
+        li.style.borderRadius = '10px';
+        li.style.boxShadow = '0 2px #ddd';
+        li.style.borderBottom = '1px solid #ddd';
+
+        const imgWrapper = document.createElement('div');
+        imgWrapper.style.width = '70px';
+        imgWrapper.style.height = '70px';
+        imgWrapper.style.overflow = 'hidden';
+        imgWrapper.style.borderRadius = '5px 0 0 5px';
+
+        const img = document.createElement('img');
+        img.src = '/img/' + food.avatar;
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+
+        imgWrapper.appendChild(img);
+
+        const contentWrapper = document.createElement('div');
+        contentWrapper.style.flex = '1';
+        contentWrapper.style.padding = '10px';
+
+        const h2 = document.createElement('h2');
+        h2.style.fontSize = '16px';
+        h2.textContent = food.name;
+
+        const p = document.createElement('p');
+        p.style.fontSize = '14px';
+        p.style.marginTop = '5px';
+        p.textContent = `Giá: ${food.price} VNĐ`;
+
+        const button = document.createElement('button');
+        button.textContent = 'Tạm ngưng món ăn';
+        button.style.marginLeft = '10px';
+
+        button.addEventListener('click', () => {
+          fetch(`http://localhost:9000/food/${food.id}/change-status`, {
+            method: 'POST',
+            headers: {
+              'Authorization': token
+            }
+          })
+          .then(response => {
+            if (response.ok) {
+              // Thay đổi trạng thái thành công, cập nhật lại giao diện
+              if (food.status == 0) {
+                button.textContent = 'Sử Dụng món ăn';
+              }
+              location.reload();
+            } else {
+              // Thay đổi trạng thái không thành công, hiển thị thông báo lỗi
+              alert('Lỗi: ' + response.statusText);
+              location.reload();
+            }
+          })
+          .catch(error => console.error(error));
+        });
+
+        contentWrapper.appendChild(h2);
+        contentWrapper.appendChild(p);
+        contentWrapper.appendChild(button);
+
+        li.appendChild(imgWrapper);
+        li.appendChild(contentWrapper);
+
+        row.appendChild(li);
+        counter++;
+
+    });
+})
+.catch(error => console.error(error));
+	
+</script>
+</body>
+</html>

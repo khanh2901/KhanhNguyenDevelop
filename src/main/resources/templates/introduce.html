@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    </head>
+    <style></style>
+
+    <body>
+        <header class="header">
+            <ul id="nav">
+                <a id="image"> <img width="130px" alt="" src="/img/LogoK.png" /> </a>
+                <li class="abc"><a th:href="@{http://localhost:9000/customer-overview}">Tổng Quan</a></li>
+                <li class="abc" sec:authorize="!hasRole('CUSTOMER')"><a th:href="@{/food-sale}">MENU</a></li>
+                <li class="abc" sec:authorize="!hasRole('CUSTOMER')">
+                    <a th:href="@{/order-customer}">Quản Lý Đơn Hàng</a>
+                </li>
+                <li class="abc"><a th:href="@{/booking}">Đặt Bàn</a></li>
+                <li class="abc"><a th:href="@{/cart}">Giỏ Hàng</a></li>
+            </ul>
+            <div>
+                <a th:href="@{/profile-customer}"><i class="fas fa-user"></i> Trang Cá Nhân</a>
+            </div>
+        </header>
+    </body>
+</html>

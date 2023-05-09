@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<link rel="stylesheet" th:href="@{/css/styte.css}" />
+<link rel="stylesheet" th:href="@{/css/AssignnJob.css}" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+
+	<main>
+		<div id="left">
+			<div id="form-wrapper">
+				<form id="taskForm" th:action="@{/create-job}"
+					onsubmit="createObject(event);" method="post">
+					<input id="create-job" class="submit-button" type="submit"
+						value="Thêm Mới Công Việc" />
+					<h2>Công Việc Nhân Viên</h2>
+					<h3>Công Việc</h3>
+					<textarea name="addTask" placeholder="Write a new task here."
+						required></textarea>
+					<h3>Mô tả công việc</h3>
+					<textarea name="description"
+						placeholder="Add description to task here." required></textarea>
+					<div id="form-col-wrapper">
+						<div id="form-left">
+							<h3>Người Thực Hiện</h3>
+							<select id="customerList"></select>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+
+		<div id="right">
+			<div id="right-wrapper">
+				<h2>Danh Sách Công Việc</h2>
+				<div id="list-container"></div>
+			</div>
+		</div>
+		<div id="chart-wrapper">
+			<div id="list-container-job-done"></div>
+		</div>
+	</main>
+
+	<script th:inline="javascript">
+            const customerList = document.querySelector("#customerList");
+            var token = /*[[${session.accesstoken}]]*/ "";
+
+            function createObject(event) {
+                event.preventDefault();
+                var form = event.target;
+
+                var form = document.querySelector("#taskForm");
+                var employeeSelect = customerList;
+                var employeeOption = employeeSelect.options[employeeSelect.selectedIndex];
+                var employeeId = employeeOption.value;
+                var employeeName = employeeOption.text;
+                var jobName = form.elements.addTask.value;
+                var description = form.elements.description.value;
+
+                var data = {
+                    employeeId: employeeId,
+                    employeeName: employeeName,
+                    jobName: jobName,
+                    description: description,
+                };
+
+                // Chuyển đổi object data thành query string
+                var queryString = Object.keys(data)
+                    .map((key) => key + "=" + data[key])
+                    .join("&");
+
+                fetch("http://localhost:9000/create-job?" + queryString, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: token,
+                    },
+                })
+                    .then((response) => {
+                        console.log(response);
+                        alert("Đã tạo thành công");
+                        location.reload();
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+
+            fetch("http://localhost:9000/employee-list-v2", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    data.forEach((customer) => {
+                        const option = document.createElement("option");
+                        option.value = customer.id;
+                        option.text = customer.fullName;
+                        customerList.add(option);
+                    });
+                });
+
+            fetch("http://localhost:9000/list-job")
+                .then((response) => response.json())
+                .then((jobs) => {
+                    const listContainer = document.querySelector("#list-container");
+
+                    listContainer.innerHTML = "";
+
+                    jobs.forEach((job) => {
+                        const listItem = document.createElement("div");
+                        listItem.classList.add("list-item");
+
+                        const jobName = document.createElement("h3");
+                        jobName.innerText = "Công Việc: " + job.jobName;
+
+                        const description = document.createElement("p");
+                        description.innerText = "Mô tả: " + job.description;
+
+                        const employee = document.createElement("p");
+                        employee.innerText = `Người thực hiện: ${job.employeeName}`;
+
+                        const status = document.createElement("p");
+                        if (job.status == 1) {
+                            status.innerText = "Trạng Thái: Chưa Thực Hiện";
+                        } else if (job.status == 2) {
+                            status.innerText = "Trạng Thái: Đang Thực Hiện ";
+                        }
+
+                        listItem.appendChild(jobName);
+                        listItem.appendChild(description);
+                        listItem.appendChild(employee);
+                        listItem.appendChild(status);
+
+                        listContainer.appendChild(listItem);
+                    });
+                });
+
+            fetch("http://localhost:9000/list-job/done")
+                .then((response) => response.json())
+                .then((jobs) => {
+                    console.log(jobs);
+                    const listContainerJobDone = document.querySelector("#list-container-job-done");
+
+                    listContainerJobDone.innerHTML = "";
+
+                    jobs.forEach((job) => {
+                        const listItem = document.createElement("div");
+                        listItem.classList.add("list-item");
+
+                        const jobName = document.createElement("h3");
+                        jobName.innerText = "Công Việc: " + job.jobName;
+
+                        const description = document.createElement("p");
+                        description.innerText = "Mô tả: " + job.description;
+
+                        const employee = document.createElement("p");
+                        employee.innerText = `Người thực hiện: ${job.employeeName}`;
+
+                        const status = document.createElement("p");
+                        if (job.status == 3) {
+                            status.innerText = "Trạng Thái: Đã Hoàn Thành";
+                        }
+
+                        listItem.appendChild(jobName);
+                        listItem.appendChild(description);
+                        listItem.appendChild(employee);
+                        listItem.appendChild(status);
+                        listContainerJobDone.appendChild(listItem);
+                    });
+                });
+        </script>
+
+	<script type="text/javascript"
+		src="https://www.gstatic.com/charts/loader.js"></script>
+	
+
+</body>
+</html>

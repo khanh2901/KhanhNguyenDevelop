@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quản lý kho</title>
+<link rel="stylesheet" th:href="@{/css/styte.css}">
+<link rel="stylesheet" th:href="@{/css/wareHouse.css}">
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+
+	<div class="container">
+		<input type="text" id="search-input" placeholder="Tìm kiếm...">
+
+		<table>
+			<h2>Danh Sách Phiếu Kho</h2>
+			<br>
+			<br>
+			<thead>
+				<tr>
+					<th>Mã Phiếu</th>
+					<th>Người Tạo Phiếu</th>
+					<th>Thành Tiền</th>
+					<th>VAT(%)</th>
+					<th>Tiền VAT</th>
+					<th>Giảm Giá Theo Phần Trăm(%)</th>
+					<th>Giảm Giá Theo Tiền Mặt</th>
+					<th>Tổng Tiền</th>
+					<th>Loại Phiếu</th>
+					<th>Xem Chi Tiết</th>
+				</tr>
+			</thead>
+			<tbody id="ingredients-list">
+			</tbody>
+		</table>
+	</div>
+
+	<script th:inline="javascript">
+  var token = /*[[${session.accesstoken}]]*/ '';
+  
+  
+  const orderList = document.getElementById("ingredients-list");
+
+
+ 
+  var index = 0;
+  fetch('http://localhost:9000/warehouse-session/list', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token
+    }
+  })
+  .then(response => response.json())
+  .then(ingredients => { 
+	  
+	  
+	  function getDetails(warehouseId) {
+	          const url = `http://localhost:9000/warehouse-detail-list/${warehouseId}`;
+	          fetch(url)
+	              .then((response) => response.json())
+	              .then((details) => {
+	                  console.log(details);
+	                  // Create a new HTML element to display the details
+	                  const detailTable = document.createElement("table");
+	                  const headerRow = document.createElement("tr");
+
+	                  // Create table header cells
+	                  const categoryNameHeader = document.createElement("th");
+	                  categoryNameHeader.textContent = "Danh Mục";
+	                  headerRow.appendChild(categoryNameHeader);
+
+	                  const materialNameHeader = document.createElement("th");
+	                  materialNameHeader.textContent = "Tên Nguyên Liệu";
+	                  headerRow.appendChild(materialNameHeader);
+
+	                  const quantityHeader = document.createElement("th");
+	                  quantityHeader.textContent = "Số Lượng";
+	                  headerRow.appendChild(quantityHeader);
+
+
+	                  const totalAmountHeader = document.createElement("th");
+	                  totalAmountHeader.textContent = "Tổng Tiền";
+	                  headerRow.appendChild(totalAmountHeader);
+
+	                  detailTable.appendChild(headerRow);
+
+	                  // Loop through the details and add them to the table
+	                  details.forEach((detail) => {
+	                      const detailRow = document.createElement("tr");
+
+	                      const categoryNameCell = document.createElement("td");
+	                      categoryNameCell.textContent = detail.categoryName;
+	                      detailRow.appendChild(categoryNameCell);
+
+	                      const materialNameCell = document.createElement("td");
+	                      materialNameCell.textContent = detail.materialName;
+	                      detailRow.appendChild(materialNameCell);
+
+	                      const quantityCell = document.createElement("td");
+	                      quantityCell.textContent = detail.quantity;
+	                      detailRow.appendChild(quantityCell);
+
+	                      const priceCell = document.createElement("td");
+	                      priceCell.textContent = detail.price;
+	                      detailRow.appendChild(priceCell);
+
+	                      const totalAmountCell = document.createElement("td");
+	                      totalAmountCell.textContent = detail.total_amount;
+	                      detailRow.appendChild(totalAmountCell);
+
+	                      detailTable.appendChild(detailRow);
+	                  });
+
+	                  // Create a popup window to display the details
+	                  const popup = document.createElement("div");
+	                  popup.classList.add("popup");
+	                  popup.appendChild(detailTable);
+	                  document.body.appendChild(popup);
+
+	                  // Close the popup when clicking outside of it
+	                  popup.addEventListener("click", (event) => {
+	                      if (event.target === popup) {
+	                          popup.remove();
+	                      }
+	                  });
+	              })
+	              .catch((error) => {
+	                  console.error(error);
+	              });
+	      }
+
+	  var searchInput = document.getElementById('search-input');
+	  var tableRows = document.getElementById('ingredients-list').rows;
+
+	  searchInput.addEventListener('keyup', function(event) {
+	    var searchText = event.target.value.toLowerCase();
+	    for (var i = 0; i < tableRows.length; i++) {
+	      var rowText = tableRows[i].textContent.toLowerCase();
+	      if (rowText.includes(searchText)) {
+	        tableRows[i].style.display = '';
+	      } else {
+	        tableRows[i].style.display = 'none';
+	      }
+	    }
+	  });
+    // Xử lý danh sách nguyên liệu ở đây
+    const ingredientsList = document.getElementById('ingredients-list');
+    ingredients.forEach(ingredient => {
+      const tr = document.createElement('tr');
+      
+      const tdId = document.createElement('td');
+      tdId.textContent = index;
+      
+      const tdCode = document.createElement('td');
+      tdCode.textContent = ingredient.code;
+      
+      const tduserCreated = document.createElement('td');
+      
+      const tdAmount = document.createElement('td');
+      tdAmount.textContent = ingredient.amount;
+      
+      
+      const tdVAT= document.createElement('td');
+      tdVAT.textContent = ingredient.vat;
+
+       
+      const tdVatAmount= document.createElement('td');
+      tdVatAmount.textContent = ingredient.vatAmount;
+      
+      
+      const tddisCountPerCent= document.createElement('td');
+      tddisCountPerCent.textContent = ingredient.discountPercent;
+      
+      
+      const tddisCountAmount= document.createElement('td');
+      tddisCountAmount.textContent = ingredient.discountAmount;
+      
+      const tddTotalAmount= document.createElement('td');
+      tddTotalAmount.textContent = ingredient.totalAmount;
+      
+      const tdType= document.createElement('td');
+      
+      var select ={
+    		  value0 : "Phiếu Nhập",
+    		  value1 : "Phiếu xuất",
+    		  value2 : "Phiếu hủy",
+    		  value3 : "Phiếu trả",
+    		  
+      }
+      switch(ingredient.type){
+      case 0: 
+    	  tdType.textContent = select.value0;
+    	  break;
+      case 1: 
+    	  tdType.textContent = select.value1;
+    	  break;
+      case 2: 
+    	  tdType.textContent = select.value2;
+    	  break;
+      case 3: 
+    	  tdType.textContent = select.value3;
+    	  break;
+    	default :
+    		 tdType.textContent = select.value0;
+  	  break;
+      }
+      
+      var data =
+    	  {
+    		  id: ingredient.userId
+    	  }
+      
+      
+      var queryString = Object.keys(data).map(key => key + '=' + data[key])
+      fetch('http://localhost:9000/profile-fage?' + queryString , {
+    	  method: 'GET',
+    	  headers: {
+    	    'Content-Type': 'application/json',
+    	    'Authorization': token
+    	  }
+    	})
+    	.then(response => response.json())
+    	.then(user => { 
+    		
+    	
+    	tduserCreated.textContent = user.fullName;
+    	})
+    	.catch(error => console.log(error));
+ 
+
+      const button = document.createElement("button");
+
+      button.innerText = "Xem Chi Tiết";
+      button.style.marginTop = "20px"; // Add a right margin to separate the buttons
+      button.style.marginRight = "50px"; // Add a right margin to separate the buttons
+      button.addEventListener("click", () => {
+          getDetails(ingredient.id) // Call the getDetails() function with the order's ID
+      });
+
+	  tr.appendChild(tdCode);
+	  tr.appendChild(tduserCreated);
+	  tr.appendChild(tdAmount);
+	  tr.appendChild(tdVAT);
+      tr.appendChild(tdVatAmount);
+	  tr.appendChild(tddisCountPerCent);
+	  tr.appendChild(tddisCountAmount);
+	  tr.appendChild(tddTotalAmount);
+	  tr.appendChild(tdType);
+	  tr.appendChild(button);
+
+
+
+      ingredientsList.appendChild(tr);
+    })
+  })
+  .catch(error => console.log(error));
+</script>
+<body>
+</html>

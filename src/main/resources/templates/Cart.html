@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" th:href="@{/css/styte.css}">
+<link rel="stylesheet" th:href="@{/css/cart.css}">
+<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+
+	<div th:replace="introduce :: header"></div>
+
+	
+	<div class="container">
+		<h2>Giỏ Hàng</h2>
+		<div class="cart">
+
+		</div>
+ 					
+		<div class="cart-items"></div>
+			   	 	<div class="cart-total">
+			      <p>
+			        <span>Số lượng sản phẩm:</span>
+			        <span class="total-quantity">0</span>
+			      </p>
+			       <p>
+			        <span>Tổng thanh toán:</span>
+			        <span class="total-price">0</span>
+			      </p>
+			      <a href="#" id="checkout-button">Tiến hành thanh toán</a>
+			    </div>
+	</div>
+
+
+
+<script th:inline="javascript">
+  var token = /*[[${session.accesstoken}]]*/ '';
+  var cart = document.querySelector('.cart');
+  const cartItemsDiv = document.querySelectorAll(".cart-items");
+  const totalQuantityDiv = document.querySelector(".total-quantity");
+  const totalPriceDiv = document.querySelector(".total-price");
+  const checkoutButton = document.querySelector('#checkout-button');
+ 
+  var cartItems = [];
+  
+  checkoutButton.addEventListener('click', event => {
+	  event.preventDefault(); // Ngăn chặn hành động mặc định của thẻ <a>
+	  
+	  // Gọi API /success-bill với method POST và header Authorization chứa access token
+	  fetch('http://localhost:9000/success-bill', {
+	    method: 'POST',
+	    headers: {
+	      'Content-Type': 'application/json',
+	      'Authorization': token
+	    }
+	  })
+	  .then(response => response.json())
+	  .then(data => {
+	    if(data == null){
+	    	alert("Giỏ Hàng Đang Trống")
+	    }
+	    console.log(data);
+	    location.reload();
+	  })
+	  .catch(error => {
+	    // Xử lý lỗi nếu có
+	    console.error('Lỗi khi gọi API /success-bill: ', error);
+	  });
+	});
+  
+  
+  
+  
+  function updateCartInfo(cartItems) {
+	    let totalQuantity = 0;
+	    let totalPrice = 0;
+
+	    cartItems.forEach((cartItem) => {
+	      totalQuantity += cartItem.quantity;
+	      totalPrice += cartItem.price * cartItem.quantity;
+	    });
+
+	    totalQuantityDiv.textContent = totalQuantity;
+	    totalPriceDiv.textContent =  totalPrice.toLocaleString("VN");
+	  }
+ 
+  // Lấy danh sách sản phẩm từ API
+  fetch('http://localhost:9000/list-cart', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+	  cartItems = data;    // Hiển thị sản phẩm lên trang web
+    data.forEach(product => {
+      const productHTML = `
+        <div class="product" data-product-id="${product.id}">
+          <img src="${product.avatar}">
+          <div class="product-info">
+            <h3 class="product-name">${product.foodName}</h3>
+            <h4 class="product-price">Đơn giá : ${product.price}</h4>
+            <p class="product-quantity">Số Lượng: ${product.quantity}</p>
+            <p class="product-remove">
+              <i class="fa fa-trash" aria-hidden="true"></i>
+              <span class="remove">Remove</span>
+            </p>
+          </div>
+        </div>
+      `;
+      cart.innerHTML += productHTML;
+    
+    });
+    updateCartInfo(cartItems);
+    // Lấy tất cả các nút xóa sản phẩm trong giỏ hàng
+    const removeButtons = document.querySelectorAll('.product-remove');
+
+    // Thêm sự kiện click vào mỗi nút xóa sản phẩm
+    removeButtons.forEach(removeButton => {
+      removeButton.addEventListener('click', event => {
+        // Ngăn chặn hành động mặc định của nút xóa sản phẩm
+        event.preventDefault();
+
+        // Lấy id của sản phẩm được click vào nút xóa tương ứng
+        const productId = removeButton.parentElement.parentElement.dataset.productId;
+
+        // Gọi API để xóa sản phẩm
+        fetch(`http://localhost:9000/cart/${productId}/delete`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+          }
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Xóa sản phẩm thành công từ API, tiến hành cập nhật lại giỏ hàng
+          const productDiv = removeButton.parentElement.parentElement;
+          productDiv.remove();
+          location.reload();
+        })
+        .catch(error => {
+          // Xử lý lỗi nếu có
+          console.error('Lỗi khi xóa sản phẩm từ API: ', error);
+        });
+      });
+    });
+  })
+  .catch(error => {
+    // Xử lý lỗi nếu có
+    console.error('Lỗi khi lấy dữ liệu từ API: ', error);
+  });
+</script>
+
+
+<body>
+</html>

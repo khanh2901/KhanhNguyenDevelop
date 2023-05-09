@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+        <link rel="stylesheet" th:href="@{/css/listCustomer.css}" />
+    </head>
+    <body>
+        <div th:replace="header :: header"></div>
+
+        <div class="container">
+            <input type="text" id="search-input" placeholder="Tìm kiếm..." />
+
+            <table>
+                <caption>
+                    Danh Sách Khách Hàng
+                </caption>
+                <thead>
+                    <tr class="thead">
+                        <th scope="col">STT</th>
+                        <th scope="col">Ảnh Đại Diện</th>
+                        <th scope="col">Họ Và Tên</th>
+                        <th scope="col">Chức Vụ</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Điện thoại</th>
+                        <th scope="col">Trạng Thái Tài Khoản</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list-id">
+                    <tr th:each="customer,rowCount : ${CustomerOn}">
+                        <td data-label="STT" th:text="${rowCount.count}"></td>
+                        <td data-label="Name"><img width="100px" height="100px" object-fix:content th:src="@{'/img/'+${customer.avatar}}" /></td>
+                        <td data-label="Name" th:text="${customer.fullName}"></td>
+                        <td data-label="Role" th:switch="${customer.role}">
+                            <div th:switch="${customer.role}">
+                                <p th:case="3">Khách Hàng</p>
+                            </div>
+                        </td>
+                        <td data-label="Email" th:text="${customer.email}"></td>
+                        <td data-label="Phone" th:text="${customer._phone}"></td>
+                        <th>
+                            <form th:action="@{customer/{id}/change-status(id = ${customer.getId()})}" th:object="${UserChangeStatus}" method="POST">
+                                <button type="submit">Khóa Tài Khoản</button>
+                            </form>
+                        </th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <script th:inline="javascript">
+            var searchInput = document.getElementById("search-input");
+            var tableRows = document.getElementById("user-list-id").rows;
+
+            searchInput.addEventListener("keyup", function (event) {
+                var searchText = event.target.value.toLowerCase();
+                for (var i = 0; i < tableRows.length; i++) {
+                    var rowText = tableRows[i].textContent.toLowerCase();
+                    if (rowText.includes(searchText)) {
+                        tableRows[i].style.display = "";
+                    } else {
+                        tableRows[i].style.display = "none";
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

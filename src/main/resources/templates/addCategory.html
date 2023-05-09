@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" th:href="@{/css/signup.css}" />
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+    </head>
+    <body>
+        <div th:replace="header :: header"></div>
+
+        <form th:action="@{/categories/create}" onsubmit="createObject(event);" method="post">
+            <h2>Tạo Mới Danh Mục</h2>
+            <br />
+            <input type="text" name="name" th:value="${name}" placeholder="Tên danh mục" required />
+            <input type="text" name="description" th:value="${description}" placeholder="Mô tả" />
+            <input type="text" name="sort" th:value="${sort}" placeholder="Thứ tự của danh mục" />
+            <button type="submit">Tạo mới</button>
+        </form>
+
+        <script th:inline="javascript">
+            function createObject(event) {
+                event.preventDefault();
+                var form = event.target;
+                var data = {
+                    name: form.elements.name.value,
+                    description: form.elements.description.value,
+                    sort: form.elements.sort.value,
+                };
+                var token = /*[[${session.accesstoken}]]*/ "";
+                // Chuyển đổi object data thành query string
+                var queryString = Object.keys(data)
+                    .map((key) => key + "=" + data[key])
+                    .join("&");
+
+                fetch("http://localhost:9000/categories/create?" + queryString, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: token,
+                    },
+                })
+                    .then((response) => {
+                        console.log(response);
+                        alert("ok");
+                        form.reset();
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                    });
+            }
+        </script>
+    </body>
+</html>

@@ -1,0 +1,14 @@
+<!DOCTYPE suite>
+<suite name="My Test Suite" verbose="1">
+    <listeners>
+        <listener class-name="org.testng.reporters.EmailableReporter"></listener>
+        <listener class-name="org.testng.reporters.XMLReporter"></listener>
+        <listener class-name="org.testng.reporters.JUnitReportReporter"></listener>
+        <listener class-name="org.testng.reporters.SuiteHTMLReporter"></listener>
+        </listeners>
+    <test name="My Test">
+        <classes>
+            <class name="nguyenquockhanh.autotest.test.Test1"/>
+        </classes>
+    </test>
+</suite>

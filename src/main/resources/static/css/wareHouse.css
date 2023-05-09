@@ -1,0 +1,214 @@
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+tr:nth-child(odd) {
+  background-color: #f2f2f2;
+}
+th,
+td {
+  text-align: center;
+  padding: 10px;
+}
+
+
+caption {
+  text-align: center;
+  font-weight: bold;
+  font-size: 40px;
+}
+
+td {
+  padding: 10px;
+}
+
+.Company_name {
+  padding-left: 10px;
+  text-align: left;
+}
+
+.date {
+  padding-right: 10px;
+}
+
+.total_quantity {
+  padding-left: 15px;
+}
+
+.border {
+  border-left: 2px solid #c6c6c6;
+  height: 1px;
+  padding-top: 15px;
+}
+
+.blue {
+  color: #3468f5;
+}
+
+.bold {
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.invoice {
+  display: flex;
+  align-items: center;
+}
+
+.pay_button {
+  border: 1px solid #62d45f;
+  padding: 5px 30px;
+  border-radius: 50px;
+}
+
+.pay {
+  color: #62d45f;
+}
+
+.processing {
+  color: #3468f5;
+}
+
+
+
+.processign_button {
+  border: 1px solid #3468f5;
+  padding: 5px 10px;
+  border-radius: 50px;
+}
+
+.invoice_number {
+  margin-top: 10px;
+}
+
+.th_align_right {
+  text-align: right;
+}
+
+.th_align_left {
+  text-align: left;
+}
+
+th {
+	width:400px;
+  color: #5d5b5b;
+}
+
+thead{
+	margin-top: 100px;
+}
+
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  height: 70%;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+
+.popup1 {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  max-height: 80vh;
+  overflow-y: auto;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.popup1 form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.popup1 input,
+.popup1 select {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.popup1 select {
+  height: 40px;
+}
+
+.popup1 button {
+  background-color: #1e88e5;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup1 button:hover {
+  background-color: #1565c0;
+}
+
+.popup1 p {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+
+
+
+
+
+.popup form {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.popup input,
+.popup select {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.popup select {
+  height: 40px;
+}
+
+.popup button {
+  background-color: #1e88e5;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup button:hover {
+  background-color: #1565c0;
+}
+
+.popup p {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+

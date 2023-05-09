@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quản lý kho</title>
+<link rel="stylesheet" th:href="@{/css/styte.css}">
+<link rel="stylesheet" th:href="@{/css/wareHouse.css}">
+
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+
+	<div class="container">
+		<table>
+			<thead>
+				<tr>
+					<th>Tên nguyên liệu</th>
+					<th>Mã Nguyên Liệu</th>
+					<th>Danh Mục</th>
+					<th>Đơn Vị</th>
+					<th>Giá Vốn</th>
+					<th>Giá Bán</th>
+				</tr>
+			</thead>
+			<tbody id="ingredients-list">
+			</tbody>
+		</table>
+	</div>
+
+	<script th:inline="javascript">
+  var token = /*[[${session.accesstoken}]]*/ '';
+  console.log(token);
+  var index = 0;
+  fetch('http://localhost:9000/material/list/to-warehouse', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': token
+    }
+  })
+  .then(response => response.json())
+  .then(ingredients => { 
+    // Xử lý danh sách nguyên liệu ở đây
+    const ingredientsList = document.getElementById('ingredients-list');
+    ingredients.forEach(ingredient => {
+      const tr = document.createElement('tr');
+      
+      const tdId = document.createElement('td');
+      tdId.textContent = index;
+      
+      const tdName = document.createElement('td');
+      tdName.textContent = ingredient.name;
+      const tdCode = document.createElement('td');
+      tdCode.textContent = ingredient.code;
+      const tdUnit = document.createElement('td');
+      const tdCostPrice = document.createElement('td') ;
+      tdCostPrice.textContent = ingredient.costPrice + ' VND';
+      const tdRetailPrice = document.createElement('td');
+      tdRetailPrice.textContent = ingredient.retailPrice + ' VND';
+	  const tdCategory = document.createElement('td');
+
+	  tr.appendChild(tdName);
+	  tr.appendChild(tdCode);
+ 
+     
+      var data =
+    	  {
+    		  id: ingredient.categoryId
+    	  }
+      
+      var data1 =
+	  {
+		  id: ingredient.unitId
+	  }
+      
+      var queryString = Object.keys(data).map(key => key + '=' + data[key])
+      fetch('http://localhost:9000/categories/detail?' + queryString , {
+    	  method: 'GET',
+    	  headers: {
+    	    'Content-Type': 'application/json',
+    	    'Authorization': token
+    	  }
+    	})
+    	.then(response => response.json())
+    	.then(category => { 
+    		
+    	
+    	  tdCategory.textContent = category.name;
+    	})
+    	.catch(error => console.log(error));
+ 
+
+      var queryString = Object.keys(data1).map(key => key + '=' + data1[key])
+      fetch('http://localhost:9000/unit/detail?' + queryString , {
+    	  method: 'GET',
+    	  headers: {
+    	    'Content-Type': 'application/json',
+    	    'Authorization': token
+    	  }
+    	})
+    	.then(response => response.json())
+    	.then(unit => { 
+    	tdUnit.textContent = unit.name;
+    	})
+    	.catch(error => console.log(error));
+
+      
+	  tr.appendChild(tdCategory);
+	  tr.appendChild(tdUnit);
+      tr.appendChild(tdRetailPrice);
+	  tr.appendChild(tdCostPrice);
+
+      ingredientsList.appendChild(tr);
+    })
+  })
+  .catch(error => console.log(error));
+</script>
+<body>
+</html>

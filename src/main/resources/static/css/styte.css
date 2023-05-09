@@ -1,0 +1,96 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Segoe UI";
+}
+
+.container {
+	width: 100%;
+/* 	height: 100vh;
+ */	overflow: hidden;
+ 	margin-top: 80px
+}
+
+.header {
+	width: 100%;
+	height: 80px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: #f7efe3;
+	position: fixed;
+	top: 0;
+	right: 0;
+	width: 100%;
+	z-index: 999;
+	padding: 0 20px; /* Thêm padding 20px /
+box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.1); / Thêm shadow */
+}
+.foodmanager{
+	font-size:13px;
+	margin: 8px;
+	position: relative;
+	height: 40px;
+	display: flex;
+	align-items: center;
+	padding: 0 8px;
+}
+.foodmanager:hover {
+	background-color: gray;
+}
+#nav {
+	list-style: none;
+	display: flex;
+	align-items: center;
+}
+
+.subnav {
+	display: none;
+	position: absolute;
+	top: 100%;
+	right: 0;
+	background-color: #f7efe3;
+	list-style: none;
+}
+
+.abc {
+	margin: 8px;
+	position: relative;
+	height: 66px;
+	display: flex;
+	align-items: center;
+	padding: 0 8px;
+}
+
+.abc:hover {
+	background-color: gray;
+}
+
+.abc:hover .subnav {
+	display: block;
+}
+
+.abc a {
+	text-decoration: none;
+	color: black;
+}
+
+.subabc {
+	font-size: 13px;
+	padding-top: 20px;
+}
+
+.subabc:hover {
+	background-color: gray;
+}
+
+.profile1 {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100%;
+  background-color: #f7efe3;
+}
+

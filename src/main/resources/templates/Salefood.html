@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <link rel="stylesheet" th:href="@{/css/styte.css}" />
+        <link rel="stylesheet" th:href="@{/css/foodSale.css}" />
+        <style></style>
+    </head>
+    <body>
+        <div th:replace="introduce :: header"></div>
+
+        <section class="section-meals">
+            <div class="container grid grid--3-cols margin-right-md" id="data-container"></div>
+        </section>
+
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+        <script th:inline="javascript">
+            //Lấy dữ liệu từ API
+            var token = /*[[${session.accesstoken}]]*/ "";
+            fetch("http://localhost:9000/food/list", {
+                headers: {
+                    Authorization: token,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    // Xử lý kết quả trả về từ API
+                    // Ví dụ: thêm dữ liệu vào trang web
+                    const container = document.getElementById("data-container");
+
+                    data.forEach((item) => {
+                        const element = document.createElement("div");
+                        element.classList.add("food-item");
+                        element.style.width = 50;
+                        element.style.height = 50;
+
+                        const img = document.createElement("img");
+                        img.src = "/img/" + item.avatar;
+                        img.width = 200;
+                        img.height = 200;
+                        element.appendChild(img);
+
+                        const title = document.createElement("h2");
+                        title.classList.add("food-title");
+                        title.textContent = item.name;
+                        title.style.color = "white";
+                        element.appendChild(title);
+
+                        const price = document.createElement("h2");
+                        price.classList.add("food-price");
+                        price.textContent = "Giá Bán: " + item.price + " VND";
+                        price.style.color = "white";
+                        element.appendChild(price);
+
+                        const quantityInput = document.createElement("input");
+                        quantityInput.type = "number";
+                        quantityInput.value = 0;
+                        quantityInput.min = 0;
+                        quantityInput.classList.add("food-quantity");
+                        element.appendChild(quantityInput);
+
+                        const buyButton = document.createElement("button");
+                        buyButton.textContent = "Thêm Vào Giỏ Hàng";
+                        buyButton.addEventListener("click", () => {
+                            const quantity = quantityInput.value;
+                            const foodId = item.id;
+                            const foodIdsInput = document.getElementById("food-ids-input");
+
+                            if (quantity == 0) {
+                                alert(`Bạn vui lòng chọn số lượng trước khi thêm vào giỏ hàng!`);
+                                return;
+                            }
+
+                            // Check if foodIdsInput value is empty
+                            if (!foodIdsInput.value) {
+                                foodIdsInput.value = "[" + foodId + "]";
+                            }
+
+                            alert(`Đã thêm ${quantity} ${item.name} vào giỏ hàng!`);
+
+                            // Thực hiện gọi API bán món ăn
+                            const token = /*[[${session.accesstoken}]]*/ "";
+                            const saleFoodApiUrl = "http://localhost:9000/add-to-cart?foodId=" + foodId + "&foodName=" + item.name + "&img=" + "/img/" + item.avatar + "&quantity=" + quantity + "&price=" + item.price;
+                            fetch(saleFoodApiUrl, {
+                                method: "POST",
+                                headers: {
+                                    Authorization: token,
+                                },
+                            })
+                                .then((response) => {
+                                    if (!response.ok) {
+                                        throw new Error(response.statusText);
+                                    }
+                                    return response.json();
+                                })
+                                .then((data) => {
+                                    // Xử lý kết quả trả về từ API bán món ăn
+                                    console.log(data);
+                                })
+                                .catch((error) => console.error(error));
+                        });
+
+                        element.appendChild(buyButton);
+
+                        container.appendChild(element);
+                    });
+
+                    const foodIdsInput = document.createElement("input");
+                    foodIdsInput.type = "hidden";
+                    foodIdsInput.id = "food-ids-input";
+                    document.body.appendChild(foodIdsInput);
+                })
+                .catch((error) => console.error(error));
+        </script>
+    </body>
+</html>

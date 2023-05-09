@@ -1,0 +1,9 @@
+.tick line {
+  opacity: 0;
+}
+h2 {
+  font-size: 30px;
+  color: #3db6e4;
+  font-family: helvetica;
+  font-weight: normal;
+}

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quản lý kho</title>
+<link rel="stylesheet" th:href="@{/css/styte.css}">
+ <link rel="stylesheet" th:href="@{/css/wareHouse.css}">
+
+</head>
+<body>
+	<div th:replace="header :: header"></div>
+
+	<div class="container">
+		<table>
+			<thead>
+				<tr>
+					<th>Khách Hàng</th>
+					<th>Số Lượng Người</th>
+					<th>Khung Giờ Đặt Bàn</th>
+					<th>Ngày Đặt Bàn </th>
+					<th>Xác Nhận Đặt Bàn</th>
+					<th>Trạng Thái</th>
+					
+				</tr>
+			</thead>
+			<tbody id="ingredients-list">
+			</tbody>
+		</table>
+	</div>
+
+		<script th:inline="javascript">   
+		var token = /*[[${session.accesstoken}]]*/ '';
+
+		const bookingList = document.getElementById('ingredients-list'); // Get the table body element
+		const dateInput = document.querySelector('input[name="dateBooking"]'); // Get the date input field
+
+			  const url = `http://localhost:9000/booking-list?dateBooking=''`; 
+			  // Construct the API endpoint URL with the dateBooking query parameter
+		  fetch(url) // Send a GET request to the API endpoint with the dateBooking query parameter
+		    .then(response => response.json())
+		    .then(bookings => {
+		    	console.log(bookings)
+		    	 bookings.forEach(booking => {
+		    		 console.log(booking) 
+		    	       const row = document.createElement('tr');
+		    	      const customer = document.createElement('td');
+		    	      
+		    	      customer.innerText = booking.customerName; // Populate the customer name
+		    	      const numPeople = document.createElement('td');
+		    	      
+		    	      numPeople.innerText = booking.slot; // Populate the number of people
+		    	      const bookingTime = document.createElement('td');
+		    	      
+		    	      bookingTime.innerText = booking.bookingTime + ' - ' + booking.bookingTimeEnd ; 
+		    	      // Populate the booking time
+		    	      const bookingDate = document.createElement('td');
+		    	      bookingDate.innerText = booking.dateBooking; // Populate the booking date
+		    	      
+		    	      const bookingStatus = document.createElement('td');
+		    	      const bookingCancelForm = document.createElement('td');
+		    	      bookingCancelForm.innerText = 'X'; 
+		    	      
+		    	      
+		    	      if(booking.status == 1){
+		    	      bookingStatus.innerText = 'Chờ Xác Nhận'; 
+		    	      }else if(booking.status == 2){
+		    	    	  bookingStatus.innerText = 'Đã Duyệt'; 
+		    	      }else{
+		    	    	  bookingStatus.innerText = 'Đã Hủy'; 
+		    	    	  
+		    	      }
+		    	  	const button = document.createElement('button');
+		    	  	button.textContent = 'Xác Nhận Booking';
+		    	  	
+		    	  	button.style.marginTop = '10px';
+		            button.style.marginLeft = '100px';
+		    	    
+		            const buttonCancel = document.createElement('button');
+		            buttonCancel.textContent = 'Hủy Booking';
+		            buttonCancel.style.marginTop = '10px';
+		            buttonCancel.style.marginLeft = '100px';
+		            
+		            
+		            buttonCancel.addEventListener('click', () => {
+		                fetch(`http://localhost:9000/cancel-booking/${booking.id}`, {
+		                  method: 'POST',
+		                  headers: {
+		                    'Authorization': token
+		                  }
+		                })
+		                .then(response => {
+		                  if (response.ok) {
+		                    // Thay đổi trạng thái thành công, cập nhật lại giao diện
+		                    if (booking.status == 1) {
+		                      button.textContent = 'Hủy Booking';
+		                      alert('Hủy Đặt Bàn Thành Công');
+		                    }
+		                    location.reload();
+		                  } else {
+		                    // Thay đổi trạng thái không thành công, hiển thị thông báo lỗi
+		                    alert('Lỗi');
+		                    location.reload();
+		                  }
+		                })
+		                .catch(error => console.error(error));
+		              });
+		            
+		            
+		            
+		            button.addEventListener('click', () => {
+		                fetch(`http://localhost:9000/comfirm-booking/${booking.id}`, {
+		                  method: 'POST',
+		                  headers: {
+		                    'Authorization': token
+		                  }
+		                })
+		                .then(response => {
+		                  if (response.ok) {
+		                    // Thay đổi trạng thái thành công, cập nhật lại giao diện
+		                    if (booking.status == 1) {
+		                      button.textContent = 'Xác Nhận Booking';
+		                      alert('Xác Nhận Đặt Bàn Thành Công');
+		                    }
+		                    location.reload();
+		                  } else {
+		                    // Thay đổi trạng thái không thành công, hiển thị thông báo lỗi
+		                    alert('Lỗi');
+		                    location.reload();
+		                  }
+		                })
+		                .catch(error => console.error(error));
+		              });
+		            
+		    	      // Add the cells to the row
+		    	      row.appendChild(customer);
+		    	      row.appendChild(numPeople);
+		    	      row.appendChild(bookingTime);
+		    	      row.appendChild(bookingDate);
+		    	      if(booking.status == 1){
+		    	    	  
+		    	       row.appendChild(button);
+		    	      
+		    	      }else if (booking.status == 2){
+		    	    	  
+		    	   	  row.appendChild(buttonCancel);
+		    	    	  
+		    	      }else{
+		    	    	  row.appendChild(bookingCancelForm);
+		    	      }
+		    	      row.appendChild(bookingStatus);
+		    	      
+		    	      // Add the row to the table
+		    	      bookingList.appendChild(row); 
+		    	    
+		    })
+		    .catch(error => console.error(error));
+ 		}); 
+
+
+
+
+</script>
+	
+<body>
+</html>

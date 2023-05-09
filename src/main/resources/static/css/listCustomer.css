@@ -1,0 +1,124 @@
+tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+tr:nth-child(odd) {
+	background-color: #f2f2f2;
+}
+
+th, td {
+	text-align: center;
+	padding: 10px;
+}
+
+caption {
+	text-align: center;
+	font-weight: bold;
+	font-size: 40px;
+}
+
+td {
+	padding: 10px;
+}
+
+.Company_name {
+	padding-left: 10px;
+	text-align: left;
+}
+
+.date {
+	padding-right: 10px;
+}
+
+.total_quantity {
+	padding-left: 15px;
+}
+
+.border {
+	border-left: 2px solid #c6c6c6;
+	height: 1px;
+	padding-top: 15px;
+}
+
+.blue {
+	color: #3468f5;
+}
+
+.bold {
+	font-weight: bold;
+	color: #ffffff;
+}
+
+.invoice {
+	display: flex;
+	align-items: center;
+}
+
+.pay_button {
+	border: 1px solid #62d45f;
+	padding: 5px 30px;
+	border-radius: 50px;
+}
+
+.pay {
+	color: #62d45f;
+}
+
+.processing {
+	color: #3468f5;
+}
+
+.processign_button {
+	border: 1px solid #3468f5;
+	padding: 5px 10px;
+	border-radius: 50px;
+}
+
+.invoice_number {
+	margin-top: 10px;
+}
+
+.th_align_right {
+	text-align: right;
+}
+
+.th_align_left {
+	text-align: left;
+}
+
+th {
+	width: 400px;
+	color: #5d5b5b;
+}
+
+thead {
+	margin-top: 100px;
+}
+
+.search {
+	position: relative;
+}
+
+.search input {
+	width: 100%;
+	border: 1px solid #ddd;
+	padding: 5px 10px;
+	background-color: white;
+	border-radius: 30px;
+	outline: none;
+}
+
+.search input::placeholder {
+	display: flex;
+	align-items: center;
+	color: var(--text-color);
+}
+
+.search i {
+	font-size: 15px;
+	position: absolute;
+	top: 8px;
+	right: 10px;
+	display: flex;
+	align-items: center;
+}
